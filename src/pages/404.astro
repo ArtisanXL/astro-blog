@@ -1,0 +1,33 @@
+---
+export const prerender = true;
+
+import BaseLayout from "~/layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="404 — Page not found"
+  description="The page you're looking for doesn't exist."
+  noindex
+>
+  <div class="mx-auto max-w-xl py-24 text-center">
+    <p class="text-sm font-semibold uppercase tracking-wider text-brand-600">404</p>
+    <h1 class="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">Page not found</h1>
+    <p class="mt-4 text-lg text-[color:var(--muted)]">
+      The page you're looking for has moved, been deleted, or never existed.
+    </p>
+    <div class="mt-8 flex justify-center gap-3">
+      <a
+        href="/"
+        class="rounded-md bg-brand-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-brand-700"
+      >
+        Go home
+      </a>
+      <a
+        href="/blog"
+        class="rounded-md border border-[color:var(--border)] px-4 py-2 text-sm font-medium transition hover:border-brand-500"
+      >
+        Browse the blog
+      </a>
+    </div>
+  </div>
+</BaseLayout>

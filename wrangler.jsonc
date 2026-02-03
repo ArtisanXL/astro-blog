@@ -1,0 +1,34 @@
+/**
+ * Cloudflare Workers — Static Assets only.
+ *
+ * This config deploys the prerendered Astro site as static assets served by
+ * a Worker. There's no Worker code today (no `main`), which keeps cold-start
+ * at zero and cost at the assets-only tier.
+ *
+ * When you need a dynamic endpoint (auth, form submission, edge personalisation):
+ *   1. Add `"main": "./node_modules/@astrojs/cloudflare/dist/entrypoints/server.js"`
+ *      and the @astrojs/cloudflare adapter back to astro.config.mjs.
+ *   2. Or write a plain ./worker/index.ts and point `main` at it.
+ *
+ * Docs: https://developers.cloudflare.com/workers/static-assets/
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "astro-blog",
+  "compatibility_date": "2026-01-28",
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "placement": { "mode": "smart" },
+  "vars": {
+    "ENVIRONMENT": "production"
+  }
+  // Add bindings (KV, D1, R2, Queues, …) here when needed. Bindings only take
+  // effect once you add Worker code via `main`.
+}

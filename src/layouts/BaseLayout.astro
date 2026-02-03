@@ -1,0 +1,30 @@
+---
+import "~/styles/global.css";
+import BaseHead from "~/components/BaseHead.astro";
+import Header from "~/components/Header.astro";
+import Footer from "~/components/Footer.astro";
+import { SITE } from "~/consts";
+import type { SeoInput } from "~/lib/seo";
+
+interface Props extends SeoInput {
+  breadcrumbs?: Array<{ name: string; url: string }>;
+  bodyClass?: string;
+}
+
+const { bodyClass, ...seo } = Astro.props;
+---
+
+<!doctype html>
+<html lang={SITE.locale} class="scroll-pt-20">
+  <head>
+    <BaseHead {...seo} />
+  </head>
+  <body class:list={["flex min-h-screen flex-col antialiased", bodyClass]}>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <Header />
+    <main id="main" class="mx-auto w-full max-w-5xl flex-1 px-4 py-10 sm:px-6 sm:py-14">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

@@ -1,0 +1,56 @@
+---
+export const prerender = true;
+
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import PostCard from "~/components/PostCard.astro";
+import { getPublishedPosts } from "~/lib/posts";
+import { SITE } from "~/consts";
+
+const allPosts = await getPublishedPosts();
+const posts = allPosts.slice(0, SITE.postsPerPage);
+const hasMore = allPosts.length > SITE.postsPerPage;
+const totalPages = Math.ceil(allPosts.length / SITE.postsPerPage);
+
+const breadcrumbs = [
+  { name: "Home", url: "/" },
+  { name: "Blog", url: "/blog" },
+];
+---
+
+<BaseLayout
+  title="Blog"
+  description={`All posts from ${SITE.title}. Engineering, web performance, edge computing.`}
+  breadcrumbs={breadcrumbs}
+>
+  <header class="mb-10 max-w-2xl">
+    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">Blog</h1>
+    <p class="mt-3 text-lg text-[color:var(--muted)]">
+      {allPosts.length} {allPosts.length === 1 ? "post" : "posts"} on engineering, performance, and edge computing.
+    </p>
+  </header>
+
+  <div class="grid gap-6 sm:grid-cols-2">
+    {posts.map((post) => <PostCard post={post} />)}
+  </div>
+
+  {
+    hasMore && (
+      <nav
+        aria-label="Pagination"
+        class="mt-12 flex items-center justify-between border-t border-[color:var(--border)] pt-6 text-sm"
+      >
+        <span class="text-[color:var(--muted)]/60">← Newer</span>
+        <span class="text-[color:var(--muted)]">
+          Page <strong class="text-[color:var(--fg)]">1</strong> of {totalPages}
+        </span>
+        <a
+          rel="next"
+          href="/blog/page/2"
+          class="inline-flex items-center gap-2 rounded-md px-3 py-2 font-medium text-[color:var(--fg)] transition hover:bg-slate-100 dark:hover:bg-slate-800"
+        >
+          Older <span aria-hidden="true">→</span>
+        </a>
+      </nav>
+    )
+  }
+</BaseLayout>

@@ -1,0 +1,45 @@
+---
+export const prerender = true;
+
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { SITE } from "~/consts";
+
+const breadcrumbs = [
+  { name: "Home", url: "/" },
+  { name: "About", url: "/about" },
+];
+---
+
+<BaseLayout
+  title="About"
+  description={`About ${SITE.author.name} — ${SITE.author.bio}`}
+  type="profile"
+  breadcrumbs={breadcrumbs}
+>
+  <div class="mx-auto max-w-2xl">
+    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">About</h1>
+    <div class="prose mt-8">
+      <p>
+        Hi — I'm <strong>{SITE.author.name}</strong>. {SITE.author.bio}
+      </p>
+      <p>
+        This blog is built with <a href="https://astro.build">Astro</a> and runs entirely on
+        <a href="https://workers.cloudflare.com">Cloudflare Workers</a> with Static Assets,
+        so every page is served from a data center close to you with no cold starts.
+      </p>
+      <h2>The stack</h2>
+      <ul>
+        <li>Astro 6 + content collections (typed frontmatter, zero JS by default)</li>
+        <li>Cloudflare Workers — assets served from the edge, dynamic endpoints when needed</li>
+        <li>Tailwind CSS v4 for styling, with full dark-mode support</li>
+        <li>Pagefind for instant client-side search</li>
+        <li>RSS, sitemap, Open Graph, Twitter Cards, JSON-LD structured data — SEO is non-negotiable</li>
+      </ul>
+      <h2>Get in touch</h2>
+      <p>
+        The fastest way to reach me is{" "}
+        {SITE.author.email ? <a href={`mailto:${SITE.author.email}`}>email</a> : "via the links in the footer"}.
+      </p>
+    </div>
+  </div>
+</BaseLayout>

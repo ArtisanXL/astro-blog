@@ -1,0 +1,66 @@
+---
+import { Image } from "astro:assets";
+import type { Post } from "~/lib/posts";
+import FormattedDate from "./FormattedDate.astro";
+import TagPill from "./TagPill.astro";
+
+interface Props {
+  post: Post;
+  variant?: "default" | "compact";
+}
+
+const { post, variant = "default" } = Astro.props;
+const href = `/blog/${post.id}`;
+---
+
+<article
+  class:list={[
+    "group relative flex flex-col gap-3 rounded-xl border border-[color:var(--border)] p-5 transition hover:border-brand-500/50 hover:shadow-sm",
+    variant === "compact" ? "" : "sm:p-6",
+  ]}
+>
+  {
+    post.data.heroImage && variant !== "compact" && (
+      <a href={href} class="-m-5 mb-1 overflow-hidden rounded-t-xl sm:-m-6">
+        <Image
+          src={post.data.heroImage}
+          alt={post.data.heroImageAlt ?? ""}
+          width={1200}
+          height={630}
+          loading="lazy"
+          decoding="async"
+          class="aspect-[1200/630] w-full object-cover transition group-hover:scale-[1.02]"
+        />
+      </a>
+    )
+  }
+
+  <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[color:var(--muted)]">
+    <FormattedDate date={post.data.pubDate} format="short" />
+    {post.data.featured && (
+      <span class="inline-flex items-center gap-1 rounded-full bg-brand-50 px-2 py-0.5 text-brand-700 dark:bg-brand-950 dark:text-brand-300">
+        Featured
+      </span>
+    )}
+  </div>
+
+  <h2 class="text-lg font-semibold tracking-tight sm:text-xl">
+    <a href={href} class="after:absolute after:inset-0">
+      {post.data.title}
+    </a>
+  </h2>
+
+  <p class="text-sm text-[color:var(--muted)] sm:text-base">{post.data.description}</p>
+
+  {
+    post.data.tags.length > 0 && (
+      <ul class="relative z-10 flex flex-wrap gap-1.5 pt-1">
+        {post.data.tags.slice(0, 4).map((tag) => (
+          <li>
+            <TagPill tag={tag} />
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</article>

@@ -1,0 +1,41 @@
+---
+export const prerender = true;
+
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import TagPill from "~/components/TagPill.astro";
+import { getAllTags } from "~/lib/posts";
+
+const tags = [...(await getAllTags()).entries()].sort((a, b) => b[1] - a[1]);
+
+const breadcrumbs = [
+  { name: "Home", url: "/" },
+  { name: "Tags", url: "/tags" },
+];
+---
+
+<BaseLayout
+  title="Tags"
+  description="Browse posts by topic — every tag used across the blog."
+  breadcrumbs={breadcrumbs}
+>
+  <header class="mb-10 max-w-2xl">
+    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">Tags</h1>
+    <p class="mt-3 text-lg text-[color:var(--muted)]">
+      {tags.length} topics across all posts.
+    </p>
+  </header>
+
+  {
+    tags.length === 0 ? (
+      <p class="text-[color:var(--muted)]">No tags yet.</p>
+    ) : (
+      <ul class="flex flex-wrap gap-2">
+        {tags.map(([tag, count]) => (
+          <li>
+            <TagPill tag={tag} count={count} size="md" />
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</BaseLayout>

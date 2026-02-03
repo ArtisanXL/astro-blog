@@ -1,0 +1,21 @@
+---
+import { SITE } from "~/consts";
+
+interface Props {
+  date: Date;
+  format?: "long" | "short" | "iso";
+}
+
+const { date, format = "long" } = Astro.props;
+
+const text =
+  format === "iso"
+    ? date.toISOString().slice(0, 10)
+    : new Intl.DateTimeFormat(SITE.language, {
+        year: "numeric",
+        month: format === "short" ? "short" : "long",
+        day: "numeric",
+      }).format(date);
+---
+
+<time datetime={date.toISOString()}>{text}</time>

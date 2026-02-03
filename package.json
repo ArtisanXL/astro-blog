@@ -1,0 +1,40 @@
+{
+  "name": "astro-blog",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build && pagefind --site dist",
+    "preview": "wrangler dev",
+    "deploy": "npm run build && wrangler deploy",
+    "astro": "astro",
+    "check": "astro check",
+    "format": "prettier --write \"**/*.{astro,ts,tsx,js,jsx,md,mdx,json,css}\"",
+    "format:check": "prettier --check \"**/*.{astro,ts,tsx,js,jsx,md,mdx,json,css}\"",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv ./src/env.d.ts"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^5.0.6",
+    "@astrojs/rss": "^4.0.18",
+    "@astrojs/sitemap": "^3.7.2",
+    "@tailwindcss/postcss": "^4.3.0",
+    "astro": "^6.3.3",
+    "reading-time": "^1.5.0",
+    "tailwindcss": "^4.3.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "@types/node": "^22.10.0",
+    "pagefind": "^1.5.2",
+    "prettier": "^3.4.0",
+    "prettier-plugin-astro": "^0.14.1",
+    "prettier-plugin-tailwindcss": "^0.6.9",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.92.0"
+  },
+  "engines": {
+    "node": ">=20.18.0"
+  }
+}

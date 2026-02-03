@@ -1,0 +1,69 @@
+---
+export const prerender = true;
+
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import PostCard from "~/components/PostCard.astro";
+import { getPublishedPosts, getFeaturedPosts } from "~/lib/posts";
+import { SITE } from "~/consts";
+
+const [recent, featured] = await Promise.all([getPublishedPosts(), getFeaturedPosts()]);
+const latest = recent.slice(0, 6);
+---
+
+<BaseLayout title="" description={SITE.description}>
+  <section class="mb-16 max-w-3xl">
+    <p class="mb-4 inline-flex items-center gap-2 rounded-full border border-[color:var(--border)] px-3 py-1 text-xs font-medium text-[color:var(--muted)]">
+      <span class="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500"></span>
+      Edge-native · Cloudflare Workers
+    </p>
+    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">
+      Notes on engineering, performance, and shipping software.
+    </h1>
+    <p class="mt-4 text-lg text-[color:var(--muted)]">
+      {SITE.author.bio}
+    </p>
+    <div class="mt-6 flex flex-wrap gap-3">
+      <a
+        href="/blog"
+        class="rounded-md bg-brand-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-brand-700"
+      >
+        Read the blog
+      </a>
+      <a
+        href="/rss.xml"
+        class="rounded-md border border-[color:var(--border)] px-4 py-2 text-sm font-medium transition hover:border-brand-500"
+      >
+        Subscribe via RSS
+      </a>
+    </div>
+  </section>
+
+  {
+    featured.length > 0 && (
+      <section class="mb-16">
+        <h2 class="mb-6 text-xs font-semibold uppercase tracking-wider text-[color:var(--muted)]">
+          Featured
+        </h2>
+        <div class="grid gap-6 sm:grid-cols-2">
+          {featured.slice(0, 2).map((post) => (
+            <PostCard post={post} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <section>
+    <div class="mb-6 flex items-baseline justify-between">
+      <h2 class="text-xs font-semibold uppercase tracking-wider text-[color:var(--muted)]">
+        Latest posts
+      </h2>
+      <a href="/blog" class="text-sm font-medium text-brand-600 hover:text-brand-700 dark:text-brand-400">
+        View all →
+      </a>
+    </div>
+    <div class="grid gap-6 sm:grid-cols-2">
+      {latest.map((post) => <PostCard post={post} />)}
+    </div>
+  </section>
+</BaseLayout>

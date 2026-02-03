@@ -1,0 +1,46 @@
+---
+export const prerender = true;
+
+import type { GetStaticPaths } from "astro";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import PostCard from "~/components/PostCard.astro";
+import { getAllTags, getPostsByTag, slugify, type Post } from "~/lib/posts";
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const tags = await getAllTags();
+  const paths = [];
+  for (const [tag] of tags) {
+    const posts = await getPostsByTag(tag);
+    paths.push({ params: { tag: slugify(tag) }, props: { tag, posts } });
+  }
+  return paths;
+};
+
+type Props = { tag: string; posts: Post[] };
+
+const { tag, posts } = Astro.props as Props;
+
+const breadcrumbs = [
+  { name: "Home", url: "/" },
+  { name: "Tags", url: "/tags" },
+  { name: `#${tag}`, url: `/tags/${slugify(tag)}` },
+];
+---
+
+<BaseLayout
+  title={`#${tag}`}
+  description={`All posts tagged "${tag}".`}
+  breadcrumbs={breadcrumbs}
+>
+  <header class="mb-10 max-w-2xl">
+    <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-[color:var(--muted)]">Tag</p>
+    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">#{tag}</h1>
+    <p class="mt-3 text-lg text-[color:var(--muted)]">
+      {posts.length} {posts.length === 1 ? "post" : "posts"} tagged with this topic.
+    </p>
+  </header>
+
+  <div class="grid gap-6 sm:grid-cols-2">
+    {posts.map((post) => <PostCard post={post} />)}
+  </div>
+</BaseLayout>
