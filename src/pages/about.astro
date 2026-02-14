@@ -5,40 +5,82 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 import { SITE } from "~/consts";
 
 const breadcrumbs = [
-  { name: "Home", url: "/" },
-  { name: "About", url: "/about" },
+  { name: "Ana Sayfa", url: "/" },
+  { name: "Hakkımda", url: "/about" },
 ];
 ---
 
 <BaseLayout
-  title="About"
-  description={`About ${SITE.author.name} — ${SITE.author.bio}`}
+  title="Hakkımda"
+  description={`Hakkımda — ${SITE.author.name}`}
   type="profile"
   breadcrumbs={breadcrumbs}
 >
   <div class="mx-auto max-w-2xl">
-    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">About</h1>
+    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">Hakkımda</h1>
     <div class="prose mt-8">
       <p>
-        Hi — I'm <strong>{SITE.author.name}</strong>. {SITE.author.bio}
+        Bilgisayara olan ilgim ortaokul yıllarına uzanıyor; tabii başlarda
+        sadece oyun oynamak içindi. Eve internetin gelmesiyle birlikte
+        dünyanın bir ucundan bilginin bana akmaya başlaması beni çok
+        etkilemişti. Bunun üzerine araştırarak ücretsiz sağlayıcıların
+        birinde kendi siteme sahip oldum — internetin yeni yaygınlaştığı,
+        çevrenizde bilgisayarı kullanabilen insanın bile az olduğu o
+        dönemde bu başarı biraz zaman almıştı.
       </p>
+
       <p>
-        This blog is built with <a href="https://astro.build">Astro</a> and runs entirely on
-        <a href="https://workers.cloudflare.com">Cloudflare Workers</a> with Static Assets,
-        so every page is served from a data center close to you with no cold starts.
+        İlk yazılım sayılabilecek girişimimi, bir online oyunda sürekli
+        tekrarladığım hareketleri otomatikleştirmek için yaptım.
+        <a href="https://www.autoitscript.com/site/autoit/">AutoIt</a>'in
+        basit script diliyle, başında saatlerce oturup tekrarladığım
+        eylemleri analiz edip farklı durumlara göre tetiklenip devam
+        edebilen bir akış kurdum. Bugün ise PHP, Python, Arduino, C#,
+        React Native, Dart, Flutter… Kısacası bir işe başlamadan önce
+        ihtiyaç analizi yapıp hangi dil veya teknolojinin daha verimli
+        olacağını düşünerek seçim yapıyorum.
       </p>
-      <h2>The stack</h2>
+
+      <p>
+        Anlayacağınız üzere en sevdiğim özelliğim <em>kendi kendine
+        öğrenebilmek</em>. Bir ihtiyaç anında bilmediğim bir şeyle
+        karşılaşırsam, araştırıp öğrenirim. Bilginin ucuzladığının ve
+        erişimin her zamankinden kolay olduğunun farkındayım; bunu
+        elimden geldiğince kendimi geliştirmek için kullanıyorum.
+      </p>
+
+      <p>
+        Boş zamanlarımı genellikle yeni bir şeyler öğrenmeye ayırıyorum.
+        Öğrenmek adına denemekten, yanılmaktan korkmam. Sevdiğim işi
+        yaparken çalışıyor gibi hissetmediğim için kolay kolay yorulmuyor;
+        zamanımı bilinçli kullanarak bitmesi gereken işin bitmesi gereken
+        zamanda bitmesini sağlıyorum.
+      </p>
+
+      <h2>Bu site hakkında</h2>
+      <p>
+        Burası <a href="https://astro.build">Astro</a> ile yazılmış,
+        baştan sona <a href="https://workers.cloudflare.com">Cloudflare
+        Workers</a> üzerinde — Static Assets ile — yayınlanan kişisel
+        bir blog. Her sayfa build sırasında üretiliyor ve size en yakın
+        veri merkezinden, soğuk başlatma olmadan servis ediliyor. Kullanılan
+        ana parçalar:
+      </p>
       <ul>
-        <li>Astro 6 + content collections (typed frontmatter, zero JS by default)</li>
-        <li>Cloudflare Workers — assets served from the edge, dynamic endpoints when needed</li>
-        <li>Tailwind CSS v4 for styling, with full dark-mode support</li>
-        <li>Pagefind for instant client-side search</li>
-        <li>RSS, sitemap, Open Graph, Twitter Cards, JSON-LD structured data — SEO is non-negotiable</li>
+        <li>Astro 6 ve içerik koleksiyonları (tipli frontmatter, varsayılan sıfır JS)</li>
+        <li>Cloudflare Workers — edge'den statik dosya, gerektiğinde dinamik uç</li>
+        <li>Stil için Tailwind CSS v4, tam karanlık mod desteğiyle</li>
+        <li>Anlık istemci tarafı arama için Pagefind</li>
+        <li>RSS, sitemap, Open Graph, Twitter Cards, JSON-LD — SEO pazarlık konusu değil</li>
       </ul>
-      <h2>Get in touch</h2>
+
+      <h2>İletişim</h2>
       <p>
-        The fastest way to reach me is{" "}
-        {SITE.author.email ? <a href={`mailto:${SITE.author.email}`}>email</a> : "via the links in the footer"}.
+        Bu hayatta en çok bu sayfayı hazırlarken zorlanıyorum, o yüzden
+        kısa kesiyorum. Bana en hızlı{" "}
+        {SITE.author.email ? <a href={`mailto:${SITE.author.email}`}>e-posta</a> : "alttaki bağlantılardan"}{" "}
+        ile ulaşabilirsiniz. Son olarak — hayatın yoğunluğunda kendinizi
+        keşfetmeyi unutmayın. Teşekkür ederim.
       </p>
     </div>
   </div>
