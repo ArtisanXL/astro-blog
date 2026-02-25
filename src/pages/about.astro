@@ -2,81 +2,81 @@
 export const prerender = true;
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import { SITE } from "~/consts";
-
-const breadcrumbs = [
-  { name: "Ana Sayfa", url: "/" },
-  { name: "Hakkımda", url: "/about" },
-];
 ---
 
 <BaseLayout
   title="Hakkımda"
-  description={`Hakkımda — ${SITE.author.name}`}
-  type="profile"
-  breadcrumbs={breadcrumbs}
+  description="Mert hakkında — nasıl yazılım yazıyor, burada neler paylaşıyor ve nasıl ulaşılır."
 >
   <div class="mx-auto max-w-2xl">
     <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">Hakkımda</h1>
     <div class="prose mt-8">
-      <p>
-        Yazılımla tanışıklığım ortaokul yıllarında bilgisayar kullanımıyla
-        başladı. İnternetin yaygınlaşmaya başladığı dönemde edindiğim ilk
-        kişisel web sitesi, üretim ve paylaşım odaklı bir merakı tetikledi;
-        o günden bu yana bilgiye erişimi bir kaldıraç olarak kullanmayı
-        ilke edindim.
-      </p>
+      <p>Selam, ben Mert.</p>
 
       <p>
-        Yazılım üretimine yönelik ilk pratik deneyimimi, tekrarlı
-        süreçleri otomatikleştirmek üzere
+        Yazılımla aram ortaokulda başladı. O zamanlar internetten yeni yeni
+        bir şeyler kurcalıyordum; bir gün
         <a href="https://www.autoitscript.com/site/autoit/">AutoIt</a>
-        ile geliştirdiğim küçük bir betikle edindim. Süreç içinde
-        çalışmalarımı PHP, Python, C#, Dart/Flutter, React Native ve
-        Arduino gibi farklı dil ve teknolojilere genişlettim. Bugün her
-        projeye, problemi en verimli karşılayacak teknolojiyi belirleyen
-        bir ihtiyaç analiziyle başlıyorum.
+        diye bir şey buldum ve onunla küçük bir betik yazdım. Şimdi geri
+        dönüp baktığımda gülünç basit bir şeydi, ama o gün bir tuşa basıp
+        bilgisayarın benim için bir iş yaptığını görmek beni resmen
+        çarpmıştı. Galiba hâlâ aynı şey için buradayım.
       </p>
 
       <p>
-        Profesyonel yaklaşımımın merkezinde <em>kendi kendine öğrenme
-        disiplini</em> yer alır. Karşılaşılan her yeni problem; araştırma,
-        prototipleme ve gerektiğinde uzman görüşüne başvurma adımlarıyla
-        sistematik biçimde ele alınır. Bilgi kaynaklarına erişimin geçmişe
-        kıyasla dramatik biçimde kolaylaştığı bu dönemi sürekli gelişim
-        için bilinçli bir fırsat olarak değerlendiriyorum.
+        Sonra ilk kişisel sitemi açtım. Çok yavaş yükleniyordu, çok
+        çirkindi, kimse de okumuyordu — ama benimdi. O histen sonra geri
+        dönüş yok.
       </p>
 
       <p>
-        Boş zamanlarımı yeni alanlarda derinleşmek için ayırıyor; deneme
-        ve hata sürecini öğrenmenin doğal bir parçası olarak görüyorum.
-        Üzerinde çalıştığım konulara duyduğum ilgi, zaman yönetimi
-        konusundaki disiplinimle birleştiğinde, taahhüt edilen işlerin
-        öngörülen sürede tamamlanmasını mümkün kılıyor.
+        Aradan geçen yıllarda PHP, Python, C#, Dart/Flutter, React Native,
+        Arduino derken bir sürü şeye bulaştım. Bunların hangisini
+        "bildiğimi" söylemek zor; ihtiyaç olunca öğrenip kullanıyorum,
+        sonra bir kısmını unutuyorum, bir kısmı kalıyor. Bence çoğu
+        yazılımcının durumu aslında bu, sadece kimse açıkça söylemiyor.
       </p>
 
-      <h2>Bu site hakkında</h2>
-      <p>
-        Site, <a href="https://astro.build">Astro</a> ile geliştirilmiş ve
-        <a href="https://workers.cloudflare.com">Cloudflare Workers</a>
-        (Static Assets) üzerinde yayınlanmaktadır. Tüm sayfalar derleme
-        aşamasında üretilir; ziyaretçilere en yakın veri merkezinden,
-        soğuk başlatma maliyeti olmadan sunulur. Kullanılan başlıca
-        bileşenler:
-      </p>
+      <h2>Burada ne var</h2>
+      <p>Bu blogda çoğunlukla şunları yazıyorum:</p>
       <ul>
-        <li>Astro 6 ve içerik koleksiyonları (tipli frontmatter, varsayılan olarak istemci tarafı JS içermez)</li>
-        <li>Cloudflare Workers — edge'den statik dağıtım ve gerektiğinde dinamik uç noktalar</li>
-        <li>Tailwind CSS v4 ile stil yönetimi ve tam karanlık mod desteği</li>
-        <li>İstemci tarafı arama için Pagefind</li>
-        <li>RSS, sitemap, Open Graph, Twitter Cards ve JSON-LD ile bütünleşik SEO altyapısı</li>
+        <li>Uğraştığım küçük şeyler ve "şu işe yaradı, şu yaramadı" notları</li>
+        <li>Bir konuyu öğrenirken kendime tuttuğum notlar — açıkta dursun ki başkasına da yarasın</li>
+        <li>Ara sıra, kafamı yeterince yiyen bir konu üzerine uzun yazılar</li>
       </ul>
+      <p>
+        Düzenli yazmıyorum. Yazılacak bir şey olunca yazıyorum, olmayınca
+        zorlamıyorum.
+      </p>
+
+      <h2>Nasıl çalışıyorum</h2>
+      <p>
+        Çoğu şeyi kendi kendime öğrendim. Başlangıçta mecburiyetten, sonra
+        alışkanlıktan. Yeni bir problemle karşılaşınca önce kurcalıyorum,
+        küçük şeyler deneyip kırıyorum, takıldığım yerde de bilenlere
+        soruyorum. Hata yapmadan öğrenmeye pek inanmıyorum açıkçası.
+      </p>
+      <p>
+        Bir de şu var: söz verdiğim bir işi vaktinde teslim etmeyi
+        önemsiyorum. Klişe duruyor, biliyorum, ama bana iyi hissettiren
+        şeylerden biri bu.
+      </p>
+
+      <h2>Şu sıralar</h2>
+      <p>
+        Cloudflare Workers üzerinde küçük bir şey yazıyorum, akşamları da
+        uzun zamandır ertelediğim bir kitabı bitirmeye çalışıyorum.
+      </p>
 
       <h2>İletişim</h2>
       <p>
-        İş birliği, danışmanlık veya geri bildirim talepleriniz için bana{" "}
-        {SITE.author.email ? <a href={`mailto:${SITE.author.email}`}>e-posta</a> : "sayfa altındaki bağlantılar"} {" "}
-        aracılığıyla ulaşabilirsiniz. İlginiz için teşekkür ederim.
+        İş, danışmanlık ya da sadece "şu yazını okudum" demek için →
+        <a href="mailto:hello@mert.gg">hello@mert.gg</a>. Sahiden
+        yazıyorum, mail atmaktan çekinme.
+      </p>
+      <p>
+        Sitenin nasıl yapıldığını merak edersen
+        <a href="/colophon">/colophon</a> sayfasına bakabilirsin.
       </p>
     </div>
   </div>
