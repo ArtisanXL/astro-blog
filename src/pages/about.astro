@@ -2,6 +2,7 @@
 export const prerender = true;
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
+import { SITE } from "~/consts";
 ---
 
 <BaseLayout
@@ -71,8 +72,8 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
       <h2>İletişim</h2>
       <p>
         İş, danışmanlık ya da sadece "şu yazını okudum" demek için →
-        <a href="mailto:hello@mert.gg">hello@mert.gg</a>. Sahiden
-        yazıyorum, mail atmaktan çekinme.
+        <a href={`mailto:${SITE.author.email}`}>{SITE.author.email}</a>.
+        Sahiden yazıyorum, mail atmaktan çekinme.
       </p>
       <p>
         Sitenin nasıl yapıldığını merak edersen

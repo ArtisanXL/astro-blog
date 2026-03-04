@@ -1,0 +1,91 @@
+---
+export const prerender = true;
+
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { SITE } from "~/consts";
+---
+
+<BaseLayout
+  title="Colophon"
+  description="Bu site nasıl yapıldı — kullanılan araçlar, barındırma ve küçük detaylar."
+>
+  <div class="mx-auto max-w-2xl">
+    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">Colophon</h1>
+    <div class="prose mt-8">
+      <p>
+        Bu sayfa, sitenin nasıl yapıldığına dair kısa bir not. İlgini
+        çekiyorsa devam et; çekmiyorsa
+        <a href="/">ana sayfaya</a> dönmek de seni kırmaz.
+      </p>
+
+      <h2>Kod</h2>
+      <ul>
+        <li>
+          <a href="https://astro.build">Astro</a> ile yazıldı, içerik
+          koleksiyonları ve tipli frontmatter kullanılıyor.
+        </li>
+        <li>
+          Tüm sayfalar build sırasında üretiliyor; varsayılan olarak
+          istemci tarafı JavaScript yok.
+        </li>
+        <li>
+          Stil için <a href="https://tailwindcss.com">Tailwind CSS v4</a>;
+          tema tokenları doğrudan CSS'te (<code>@theme</code>) tanımlı,
+          ayrı bir <code>tailwind.config.js</code> yok.
+        </li>
+        <li>
+          Arama için <a href="https://pagefind.app">Pagefind</a> — index
+          build sırasında üretiliyor, sorgular tarayıcıda çalışıyor.
+        </li>
+      </ul>
+
+      <h2>Barındırma</h2>
+      <ul>
+        <li>
+          <a href="https://workers.cloudflare.com">Cloudflare Workers</a>
+          üzerinde, Static Assets ile yayında. Sayfalar size en yakın
+          veri merkezinden, soğuk başlatma maliyeti olmadan geliyor.
+        </li>
+        <li>
+          Deploy <a href="https://developers.cloudflare.com/workers/wrangler/">Wrangler</a>
+          ile yapılıyor.
+        </li>
+      </ul>
+
+      <h2>SEO ve beslemeler</h2>
+      <ul>
+        <li>RSS, sitemap, Open Graph, Twitter Cards ve JSON-LD — hepsi build çıktısında.</li>
+        <li>
+          Tüm SEO meta etiketleri tek bir <code>BaseHead</code> bileşeninden
+          geçiyor; sayfalar sadece başlık ve açıklama veriyor.
+        </li>
+      </ul>
+
+      <h2>Yazı yazma süreci</h2>
+      <p>
+        Yazılar <code>src/content/blog</code> altında Markdown veya MDX
+        olarak duruyor. Frontmatter şeması <code>src/content.config.ts</code>
+        içinde tanımlı — yeni bir alan eklemeden önce oraya bakıyorum.
+      </p>
+
+      <h2>Kaynak kod</h2>
+      <p>
+        Sitenin kaynağı{" "}
+        {SITE.social.find((s) => s.label === "GitHub") ? (
+          <a href={SITE.social.find((s) => s.label === "GitHub")!.href}>GitHub'da</a>
+        ) : (
+          "GitHub'da"
+        )}. Bir şey kırıkken görürsen, bana
+        <a href={`mailto:${SITE.author.email}`}>{SITE.author.email}</a>
+        adresinden yazabilirsin.
+      </p>
+
+      <h2>Teşekkür</h2>
+      <p>
+        Astro, Cloudflare ve hayatımı kolaylaştıran sayısız açık kaynak
+        projeye. Bu sitenin omurgası bu insanların ücretsiz dağıttığı
+        emek üzerine kurulu.
+      </p>
+    </div>
+  </div>
+</BaseLayout>
