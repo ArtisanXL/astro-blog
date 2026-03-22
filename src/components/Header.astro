@@ -1,40 +1,41 @@
 ---
 import { SITE } from "~/consts";
-import ThemeToggle from "./ThemeToggle.astro";
+import ThemeToggle from "~/components/ThemeToggle.astro";
 
-const pathname = Astro.url.pathname.replace(/\/$/, "") || "/";
-const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+const path = Astro.url.pathname;
+const isActive = (href: string) => {
+  if (href === "/") return path === "/";
+  return path.startsWith(href);
+};
 ---
 
-<header class="sticky top-0 z-40 border-b border-[color:var(--border)] bg-[color:var(--bg)]/85 backdrop-blur-md">
-  <div class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-    <a href="/" class="group flex items-center gap-2 font-semibold tracking-tight">
-      <span class="grid h-8 w-8 place-items-center rounded-md bg-brand-500 text-white transition group-hover:bg-brand-600">
-        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-          <path d="M4 12c4-8 12-8 16 0M4 12c4 8 12 8 16 0" />
-        </svg>
-      </span>
-      <span class="hidden sm:inline">{SITE.title.split("—")[0].trim()}</span>
+<header class="topnav">
+  <div class="shell topnav-row">
+    <a href="/" class="brand">
+      <span class="brand-mark accent">m</span>
+      <span>mert<span class="brand-host">.gg</span></span>
     </a>
 
-    <nav aria-label="Primary" class="flex items-center gap-1 text-sm font-medium">
-      {
-        SITE.navLinks.map((link) => (
-          <a
-            href={link.href}
-            aria-current={isActive(link.href) ? "page" : undefined}
-            class:list={[
-              "rounded-md px-3 py-1.5 transition",
-              isActive(link.href)
-                ? "bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-slate-100"
-                : "text-[color:var(--muted)] hover:text-[color:var(--fg)]",
-            ]}
-          >
-            {link.label}
-          </a>
-        ))
-      }
-      <ThemeToggle />
+    <nav class="nav-links" aria-label="Birincil">
+      {SITE.navLinks.map((n) => (
+        <a href={n.href} class={"nav-link" + (isActive(n.href) ? " active" : "")}>
+          {n.label}
+        </a>
+      ))}
     </nav>
+
+    <div style="display: flex; align-items: center; gap: 4px;">
+      <a class="icon-btn" href="/blog" aria-label="Ara" title="Ara">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      </a>
+      <a class="icon-btn" href="/rss.xml" aria-label="RSS" title="RSS">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.5" fill="currentColor"/></svg>
+      </a>
+      <ThemeToggle />
+      <a class="btn btn-primary" href="/blog" style="margin-left: 6px;">
+        Yazıları gez
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </a>
+    </div>
   </div>
 </header>

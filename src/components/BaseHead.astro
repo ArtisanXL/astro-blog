@@ -1,98 +1,59 @@
 ---
-import { ClientRouter } from "astro:transitions";
 import { SITE } from "~/consts";
-import {
-  resolveSeo,
-  articleJsonLd,
-  websiteJsonLd,
-  personJsonLd,
-  breadcrumbJsonLd,
-  type SeoInput,
-} from "~/lib/seo";
 
-interface Props extends SeoInput {
-  breadcrumbs?: Array<{ name: string; url: string }>;
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  canonicalURL?: string;
 }
 
-const props = Astro.props;
-const seo = resolveSeo(props, Astro.url);
-
-const jsonLdGraph = [
-  websiteJsonLd(),
-  personJsonLd(),
-  ...(props.breadcrumbs ? [breadcrumbJsonLd(props.breadcrumbs)] : []),
-  ...(seo.type === "article" ? [articleJsonLd(seo)] : []),
-];
+const {
+  title = SITE.title,
+  description = SITE.description,
+  image = SITE.ogImage,
+  canonicalURL = new URL(Astro.url.pathname, Astro.site ?? SITE.url).toString(),
+} = Astro.props;
 ---
 
-{/* Core meta */}
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="generator" content={Astro.generator} />
-<meta name="color-scheme" content="light dark" />
-<meta name="theme-color" content={SITE.themeColor} media="(prefers-color-scheme: light)" />
-<meta name="theme-color" content="#0c0a09" media="(prefers-color-scheme: dark)" />
 
-<title>{seo.fullTitle}</title>
-<meta name="description" content={seo.description} />
-<meta name="author" content={seo.author} />
-<link rel="canonical" href={seo.canonical} />
-
-{seo.noindex && <meta name="robots" content="noindex, nofollow" />}
-{!seo.noindex && <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />}
-
-{/* Open Graph */}
-<meta property="og:type" content={seo.type} />
-<meta property="og:site_name" content={SITE.title} />
-<meta property="og:title" content={seo.title} />
-<meta property="og:description" content={seo.description} />
-<meta property="og:url" content={seo.canonical} />
-<meta property="og:image" content={seo.image} />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-<meta property="og:locale" content={SITE.language.replace("-", "_")} />
-{seo.type === "article" && seo.publishedTime && (
-  <meta property="article:published_time" content={seo.publishedTime} />
-)}
-{seo.type === "article" && seo.modifiedTime && (
-  <meta property="article:modified_time" content={seo.modifiedTime} />
-)}
-{seo.type === "article" && <meta property="article:author" content={seo.author} />}
-{seo.type === "article" && seo.tags.map((tag) => <meta property="article:tag" content={tag} />)}
-
-{/* Twitter */}
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content={seo.title} />
-<meta name="twitter:description" content={seo.description} />
-<meta name="twitter:image" content={seo.image} />
-{SITE.author.twitter && <meta name="twitter:site" content={SITE.author.twitter} />}
-{SITE.author.twitter && <meta name="twitter:creator" content={SITE.author.twitter} />}
-
-{/* Discoverability */}
-<link rel="alternate" type="application/rss+xml" title={`${SITE.title} — RSS`} href="/rss.xml" />
-<link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="theme-color" content={SITE.themeColor} />
+<link rel="canonical" href={canonicalURL} />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-<link rel="manifest" href="/manifest.webmanifest" />
 
-{/* Performance hints */}
-<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
-<link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:image" content={new URL(image, Astro.site ?? SITE.url).toString()} />
+<meta property="og:locale" content={SITE.language} />
+<meta property="og:site_name" content={SITE.title} />
 
-{/* Structured data — single @graph keeps payload compact */}
-<script
-  is:inline
-  type="application/ld+json"
-  set:html={JSON.stringify({ "@context": "https://schema.org", "@graph": jsonLdGraph })}
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={new URL(image, Astro.site ?? SITE.url).toString()} />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap"
+  rel="stylesheet"
 />
 
-{/* Set dark mode before paint to avoid FOUC. */}
+<!-- Theme — set before paint to avoid flash -->
 <script is:inline>
-  (() => {
-    const stored = localStorage.getItem("theme");
-    const isDark = stored === "dark" || (!stored && matchMedia("(prefers-color-scheme: dark)").matches);
-    document.documentElement.classList.toggle("dark", isDark);
+  (function () {
+    const saved = localStorage.getItem("mertgg-theme");
+    const initial = saved || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.classList.toggle("dark", initial === "dark");
   })();
 </script>
-
-<ClientRouter fallback="swap" />

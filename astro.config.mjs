@@ -24,7 +24,7 @@ export default defineConfig({
       changefreq: "weekly",
       priority: 0.7,
       lastmod: new Date(),
-      filter: (page) => !page.includes("/404") && !page.includes("/search"),
+      filter: (page) => !page.includes("/404"),
     }),
   ],
   markdown: {

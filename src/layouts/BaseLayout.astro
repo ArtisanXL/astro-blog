@@ -3,26 +3,26 @@ import "~/styles/global.css";
 import BaseHead from "~/components/BaseHead.astro";
 import Header from "~/components/Header.astro";
 import Footer from "~/components/Footer.astro";
-import { SITE } from "~/consts";
-import type { SeoInput } from "~/lib/seo";
 
-interface Props extends SeoInput {
-  breadcrumbs?: Array<{ name: string; url: string }>;
-  bodyClass?: string;
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  canonicalURL?: string;
 }
 
-const { bodyClass, ...seo } = Astro.props;
+const { title, description, image, canonicalURL } = Astro.props;
 ---
 
 <!doctype html>
-<html lang={SITE.locale} class="scroll-pt-20">
+<html lang="tr">
   <head>
-    <BaseHead {...seo} />
+    <BaseHead title={title} description={description} image={image} canonicalURL={canonicalURL} />
   </head>
-  <body class:list={["flex min-h-screen flex-col antialiased", bodyClass]}>
-    <a href="#main" class="skip-link">Skip to content</a>
+  <body>
+    <a href="#content" class="skip-link">İçeriğe atla</a>
     <Header />
-    <main id="main" class="mx-auto w-full max-w-5xl flex-1 px-4 py-10 sm:px-6 sm:py-14">
+    <main id="content">
       <slot />
     </main>
     <Footer />

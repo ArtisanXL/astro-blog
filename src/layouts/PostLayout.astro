@@ -1,146 +1,138 @@
 ---
-import { Image } from "astro:assets";
-import type { MarkdownHeading } from "astro";
-import BaseLayout from "./BaseLayout.astro";
-import FormattedDate from "~/components/FormattedDate.astro";
-import TagPill from "~/components/TagPill.astro";
-import TableOfContents from "~/components/TableOfContents.astro";
-import { SITE } from "~/consts";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Tag from "~/components/Tag.astro";
+import { SITE, tagLabel } from "~/consts";
+import { formatDateLong } from "~/lib/format";
 import type { Post } from "~/lib/posts";
+import { estimateReadingTime } from "~/lib/posts";
 
 interface Props {
   post: Post;
-  headings: MarkdownHeading[];
-  readingMinutes: number;
+  prev?: Post;
+  next?: Post;
 }
 
-const { post, headings, readingMinutes } = Astro.props;
-const { data, id } = post;
-
-const breadcrumbs = [
-  { name: "Home", url: "/" },
-  { name: "Blog", url: "/blog" },
-  { name: data.title, url: `/blog/${id}` },
-];
+const { post, prev, next } = Astro.props;
+const rt = estimateReadingTime(post.body);
 ---
 
 <BaseLayout
-  title={data.title}
-  description={data.description}
-  type="article"
-  image={data.ogImage}
-  canonical={data.canonicalURL}
-  publishedTime={data.pubDate}
-  modifiedTime={data.updatedDate}
-  author={data.author === "default" ? SITE.author.name : data.author}
-  tags={data.tags}
-  breadcrumbs={breadcrumbs}
+  title={`${post.data.title} · ${SITE.title}`}
+  description={post.data.description}
 >
-  <article class="mx-auto grid w-full max-w-5xl gap-10 lg:grid-cols-[1fr_220px]" data-pagefind-body>
-    <div class="min-w-0">
-      <nav aria-label="Breadcrumb" class="mb-6 text-sm text-[color:var(--muted)]">
-        <ol class="flex flex-wrap items-center gap-2">
-          {
-            breadcrumbs.map((crumb, i) => (
-              <li class="flex items-center gap-2">
-                {i > 0 && <span aria-hidden="true">/</span>}
-                {i < breadcrumbs.length - 1 ? (
-                  <a href={crumb.url} class="hover:text-[color:var(--fg)]">
-                    {crumb.name}
-                  </a>
-                ) : (
-                  <span class="text-[color:var(--fg)]">{crumb.name}</span>
-                )}
-              </li>
-            ))
-          }
-        </ol>
-      </nav>
-
-      <header class="mb-8 space-y-4">
-        <h1 class="text-3xl font-bold tracking-tight sm:text-4xl" data-pagefind-meta="title">
-          {data.title}
-        </h1>
-        <p class="text-lg text-[color:var(--muted)]">{data.description}</p>
-        <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[color:var(--muted)]">
-          <span>
-            By <span class="font-medium text-[color:var(--fg)]">
-              {data.author === "default" ? SITE.author.name : data.author}
-            </span>
-          </span>
-          <span aria-hidden="true">·</span>
-          <FormattedDate date={data.pubDate} />
-          {
-            data.updatedDate && (
-              <>
-                <span aria-hidden="true">·</span>
-                <span>
-                  Updated <FormattedDate date={data.updatedDate} format="short" />
-                </span>
-              </>
-            )
-          }
-          <span aria-hidden="true">·</span>
-          <span>{readingMinutes} min read</span>
-        </div>
-        {
-          data.tags.length > 0 && (
-            <ul class="flex flex-wrap gap-1.5 pt-2">
-              {data.tags.map((tag) => (
-                <li>
-                  <TagPill tag={tag} />
-                </li>
-              ))}
-            </ul>
-          )
-        }
-      </header>
-
-      {
-        data.heroImage && (
-          <figure class="mb-10 overflow-hidden rounded-xl border border-[color:var(--border)]">
-            <Image
-              src={data.heroImage}
-              alt={data.heroImageAlt ?? ""}
-              widths={[480, 800, 1200, 1600]}
-              sizes="(min-width: 1024px) 768px, 100vw"
-              loading="eager"
-              fetchpriority="high"
-              class="w-full"
-            />
-            {data.heroImageAlt && (
-              <figcaption class="bg-slate-50 px-4 py-2 text-center text-xs text-[color:var(--muted)] dark:bg-slate-900">
-                {data.heroImageAlt}
-              </figcaption>
-            )}
-          </figure>
-        )
-      }
-
-      <div class="prose">
-        <slot />
+  <div class="post-header">
+    <div class="shell-narrow">
+      <div class="breadcrumbs">
+        <a href="/">~</a>
+        <span>/</span>
+        <a href="/blog">blog</a>
+        <span>/</span>
+        <span style="color: var(--fg);">{post.id}</span>
       </div>
-
-      <footer class="mt-16 border-t border-[color:var(--border)] pt-8">
-        <div class="flex flex-wrap items-center justify-between gap-4">
-          <a
-            href="/blog"
-            class="inline-flex items-center gap-2 text-sm font-medium text-[color:var(--muted)] transition hover:text-[color:var(--fg)]"
-          >
-            <span aria-hidden="true">←</span> All posts
-          </a>
-          <a
-            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(data.title)}&url=${encodeURIComponent(new URL(`/blog/${id}`, SITE.url).toString())}`}
-            target="_blank"
-            rel="noopener"
-            class="inline-flex items-center gap-2 rounded-md border border-[color:var(--border)] px-3 py-1.5 text-sm font-medium transition hover:border-brand-500 hover:text-brand-600"
-          >
-            Share on Twitter
-          </a>
-        </div>
-      </footer>
+      <div style="display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
+        {post.data.tags.map((t) => <Tag slug={t} />)}
+      </div>
+      <h1>{post.data.title}</h1>
+      <p class="lede">{post.data.description}</p>
+      <div class="post-meta">
+        <span class="author">
+          <span class="avatar">{SITE.author.initials}</span>
+          {SITE.author.name}
+        </span>
+        <span>·</span>
+        <span>{formatDateLong(post.data.pubDate)}</span>
+        <span>·</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          {rt.minutes} dk okuma
+        </span>
+      </div>
     </div>
+  </div>
 
-    <TableOfContents headings={headings} />
-  </article>
+  <div class="shell-narrow">
+    <div class="post-body">
+      <article class="prose" id="prose">
+        <slot />
+      </article>
+
+      <aside class="toc" id="toc">
+        <h5>İçindekiler</h5>
+        <ul id="toc-list"></ul>
+        <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);">
+          <h5>Paylaş</h5>
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--muted);">
+            <a id="share-twitter" href="#" target="_blank" rel="noreferrer" style="color: var(--muted);">Twitter'da paylaş</a>
+            <button id="share-copy" class="btn-ghost" style="background: none; border: none; color: var(--muted); cursor: pointer; padding: 0; text-align: left; font: inherit;">Linki kopyala</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <div class="shell-narrow">
+    <div class="post-foot">
+      <div class="post-foot-grid">
+        <a class="foot-link" href={prev ? `/blog/${prev.id}` : "/blog"} style={prev ? "" : "opacity: 0.4;"}>
+          <span class="lbl">← Önceki</span>
+          <h4>{prev ? prev.data.title : "Listenin başındasın"}</h4>
+        </a>
+        <a class="foot-link next" href={next ? `/blog/${next.id}` : "/blog"} style={next ? "" : "opacity: 0.4;"}>
+          <span class="lbl">Sonraki →</span>
+          <h4>{next ? next.data.title : "Listenin sonundasın"}</h4>
+        </a>
+      </div>
+    </div>
+  </div>
 </BaseLayout>
+
+<script is:inline>
+  function bindPostLayout() {
+    // Build TOC from H2's
+    const prose = document.getElementById("prose");
+    const tocList = document.getElementById("toc-list");
+    if (!prose || !tocList) return;
+    const headings = prose.querySelectorAll("h2");
+    tocList.innerHTML = "";
+    headings.forEach((h) => {
+      if (!h.id) h.id = h.textContent.toLowerCase().replace(/[^\w]+/g, "-").replace(/^-|-$/g, "");
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = "#" + h.id;
+      a.textContent = h.textContent;
+      a.dataset.tocFor = h.id;
+      li.appendChild(a);
+      tocList.appendChild(li);
+    });
+
+    function onScroll() {
+      let active = "";
+      headings.forEach((h) => {
+        if (h.getBoundingClientRect().top < 120) active = h.id;
+      });
+      tocList.querySelectorAll("li").forEach((li) => {
+        const a = li.querySelector("a");
+        li.classList.toggle("active", a && a.dataset.tocFor === active);
+      });
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+
+    // Share
+    const url = location.href;
+    const title = document.title;
+    const tw = document.getElementById("share-twitter");
+    if (tw) tw.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
+    const copy = document.getElementById("share-copy");
+    if (copy && !copy.dataset.bound) {
+      copy.dataset.bound = "1";
+      copy.addEventListener("click", () => {
+        navigator.clipboard?.writeText(url);
+        copy.textContent = "Kopyalandı ✓";
+        setTimeout(() => (copy.textContent = "Linki kopyala"), 1400);
+      });
+    }
+  }
+  bindPostLayout();
+  document.addEventListener("astro:after-swap", bindPostLayout);
+</script>

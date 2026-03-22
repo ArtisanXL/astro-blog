@@ -1,46 +1,42 @@
 ---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import PostRow from "~/components/PostRow.astro";
+import { getAllTags, getPostsByTag } from "~/lib/posts";
+import { tagLabel, BRAND } from "~/consts";
+
 export const prerender = true;
 
-import type { GetStaticPaths } from "astro";
-import BaseLayout from "~/layouts/BaseLayout.astro";
-import PostCard from "~/components/PostCard.astro";
-import { getAllTags, getPostsByTag, slugify, type Post } from "~/lib/posts";
+export async function getStaticPaths() {
+  const counts = await getAllTags();
+  const out: { params: { tag: string }; props: { tag: string } }[] = [];
+  for (const [tag] of counts) out.push({ params: { tag }, props: { tag } });
+  return out;
+}
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const tags = await getAllTags();
-  const paths = [];
-  for (const [tag] of tags) {
-    const posts = await getPostsByTag(tag);
-    paths.push({ params: { tag: slugify(tag) }, props: { tag, posts } });
-  }
-  return paths;
-};
-
-type Props = { tag: string; posts: Post[] };
-
-const { tag, posts } = Astro.props as Props;
-
-const breadcrumbs = [
-  { name: "Home", url: "/" },
-  { name: "Tags", url: "/tags" },
-  { name: `#${tag}`, url: `/tags/${slugify(tag)}` },
-];
+const { tag } = Astro.props;
+const posts = await getPostsByTag(tag);
+const label = tagLabel(tag);
 ---
 
-<BaseLayout
-  title={`#${tag}`}
-  description={`All posts tagged "${tag}".`}
-  breadcrumbs={breadcrumbs}
->
-  <header class="mb-10 max-w-2xl">
-    <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-[color:var(--muted)]">Tag</p>
-    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">#{tag}</h1>
-    <p class="mt-3 text-lg text-[color:var(--muted)]">
-      {posts.length} {posts.length === 1 ? "post" : "posts"} tagged with this topic.
-    </p>
-  </header>
+<BaseLayout title={`${label} · ${BRAND}`} description={`${label} etiketli yazılar.`}>
+  <section class="blog-head">
+    <div class="shell">
+      <div class="breadcrumbs" style="margin-bottom: 16px;">
+        <a href="/">~</a>
+        <span>/</span>
+        <a href="/tags">tags</a>
+        <span>/</span>
+        <span style="color: var(--fg);">{tag}</span>
+      </div>
+      <span class="eyebrow">/etiket — {posts.length} yazı</span>
+      <h1>{label}</h1>
+      <p>"{label}" etiketli yazıların tamamı. En yeni en üstte.</p>
+    </div>
+  </section>
 
-  <div class="grid gap-6 sm:grid-cols-2">
-    {posts.map((post) => <PostCard post={post} />)}
+  <div class="shell">
+    <div class="postlist" style="padding-bottom: 64px;">
+      {posts.map((p, i) => <PostRow post={p} index={i} />)}
+    </div>
   </div>
 </BaseLayout>

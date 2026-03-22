@@ -1,0 +1,23 @@
+---
+import type { Post } from "~/lib/posts";
+import { tagLabel } from "~/consts";
+import { formatDate } from "~/lib/format";
+
+interface Props {
+  post: Post;
+  index: number;
+}
+const { post, index } = Astro.props;
+---
+
+<a href={`/blog/${post.id}`} class="postrow">
+  <span class="num">{String(index + 1).padStart(3, "0")}</span>
+  <span class="title">{post.data.title}</span>
+  <span class="tagrow">
+    {post.data.tags.slice(0, 2).map((t) => <span class="tag">{tagLabel(t)}</span>)}
+  </span>
+  <span class="date">{formatDate(post.data.pubDate)}</span>
+  <span class="arrow">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+  </span>
+</a>

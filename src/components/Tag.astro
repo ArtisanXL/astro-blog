@@ -1,0 +1,19 @@
+---
+import { tagLabel } from "~/consts";
+
+interface Props {
+  slug: string;
+  active?: boolean;
+  href?: string;
+  as?: "a" | "span";
+}
+
+const { slug, active = false, href, as = "a" } = Astro.props;
+const link = href ?? `/tags/${slug}`;
+---
+
+{as === "a" ? (
+  <a href={link} class={"tag" + (active ? " active" : "")}>{tagLabel(slug)}</a>
+) : (
+  <span class={"tag" + (active ? " active" : "")}>{tagLabel(slug)}</span>
+)}

@@ -1,27 +1,27 @@
 ---
+import PostLayout from "~/layouts/PostLayout.astro";
+import { getPublishedPosts } from "~/lib/posts";
+import { render } from "astro:content";
+
 export const prerender = true;
 
-import type { GetStaticPaths } from "astro";
-import { render } from "astro:content";
-import PostLayout from "~/layouts/PostLayout.astro";
-import { getPublishedPosts, estimateReadingTime, type Post } from "~/lib/posts";
-
-export const getStaticPaths: GetStaticPaths = async () => {
+export async function getStaticPaths() {
   const posts = await getPublishedPosts();
-  return posts.map((post) => ({
+  return posts.map((post, i) => ({
     params: { slug: post.id },
-    props: { post },
+    props: {
+      post,
+      // newest first list — older = i+1, newer = i-1
+      prev: posts[i + 1],
+      next: posts[i - 1],
+    },
   }));
-};
+}
 
-type Props = { post: Post };
-
-const { post } = Astro.props as Props;
-const { Content, headings, remarkPluginFrontmatter } = await render(post);
-const stats = estimateReadingTime(post.body);
-const readingMinutes = (remarkPluginFrontmatter?.minutesRead as number | undefined) ?? stats.minutes;
+const { post, prev, next } = Astro.props;
+const { Content } = await render(post);
 ---
 
-<PostLayout post={post} headings={headings} readingMinutes={readingMinutes}>
+<PostLayout post={post} prev={prev} next={next}>
   <Content />
 </PostLayout>
