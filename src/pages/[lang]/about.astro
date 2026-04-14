@@ -1,0 +1,49 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { SITE, BRAND } from "~/consts";
+import { LOCALES, type Locale, useTranslations } from "~/i18n";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const locale = Astro.params.lang as Locale;
+const t = useTranslations(locale);
+---
+
+<BaseLayout
+  locale={locale}
+  title={`${t.about.title} · ${BRAND}`}
+  description={t.about.descriptionMeta}
+  altPath="/about"
+>
+  <div class="shell">
+    <section class="about-hero">
+      <div>
+        <span class="eyebrow">{t.about.eyebrow}</span>
+        <h1>{t.about.heading}</h1>
+        <p set:html={t.about.introHtml} />
+      </div>
+      <div class="about-portrait" aria-hidden="true">{SITE.author.initials}</div>
+    </section>
+
+    {t.about.sections.map((section) => (
+      <section class="about-grid">
+        <h3>{section.h}</h3>
+        <div class="prose">
+          {section.ps.map((p) => <p>{p}</p>)}
+        </div>
+      </section>
+    ))}
+
+    <section class="about-grid">
+      <h3>{t.about.contact.h}</h3>
+      <div class="prose">
+        <p set:html={t.about.contact.bodyHtml(SITE.author.email)} />
+        <p set:html={t.about.contact.colophonHtml(locale)} />
+      </div>
+    </section>
+  </div>
+</BaseLayout>

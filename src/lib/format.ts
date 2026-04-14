@@ -1,14 +1,34 @@
-/** Tarih ve okuma süresi yardımcıları (Türkçe). */
+import type { Locale } from "~/i18n";
 
-const MONTHS_SHORT = ["Oca", "Şub", "Mar", "Nis", "May", "Haz", "Tem", "Ağu", "Eyl", "Eki", "Kas", "Ara"];
-const MONTHS_LONG = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+const INTL_LOCALE: Record<Locale, string> = { tr: "tr-TR", en: "en-US" };
 
-export function formatDate(d: Date | string): string {
-  const dt = typeof d === "string" ? new Date(d) : d;
-  return `${String(dt.getDate()).padStart(2, "0")} ${MONTHS_SHORT[dt.getMonth()]} ${dt.getFullYear()}`;
+const shortCache = new Map<Locale, Intl.DateTimeFormat>();
+const longCache = new Map<Locale, Intl.DateTimeFormat>();
+
+function shortFmt(locale: Locale): Intl.DateTimeFormat {
+  let f = shortCache.get(locale);
+  if (!f) {
+    f = new Intl.DateTimeFormat(INTL_LOCALE[locale], { day: "2-digit", month: "short", year: "numeric" });
+    shortCache.set(locale, f);
+  }
+  return f;
 }
 
-export function formatDateLong(d: Date | string): string {
+function longFmt(locale: Locale): Intl.DateTimeFormat {
+  let f = longCache.get(locale);
+  if (!f) {
+    f = new Intl.DateTimeFormat(INTL_LOCALE[locale], { day: "numeric", month: "long", year: "numeric" });
+    longCache.set(locale, f);
+  }
+  return f;
+}
+
+export function formatDate(d: Date | string, locale: Locale): string {
   const dt = typeof d === "string" ? new Date(d) : d;
-  return `${dt.getDate()} ${MONTHS_LONG[dt.getMonth()]} ${dt.getFullYear()}`;
+  return shortFmt(locale).format(dt);
+}
+
+export function formatDateLong(d: Date | string, locale: Locale): string {
+  const dt = typeof d === "string" ? new Date(d) : d;
+  return longFmt(locale).format(dt);
 }

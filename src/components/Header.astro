@@ -1,23 +1,42 @@
 ---
-import { SITE } from "~/consts";
+import { NAV_KEYS, NAV_PATHS } from "~/consts";
+import { type Locale, useTranslations, otherLocale, localePath } from "~/i18n";
 import ThemeToggle from "~/components/ThemeToggle.astro";
 
+interface Props {
+  locale: Locale;
+  /** Path (without locale prefix) of the counterpart page in the other locale. */
+  altPath?: string;
+}
+
+const { locale, altPath = "/" } = Astro.props;
+const t = useTranslations(locale);
+const other = otherLocale(locale);
+const otherT = useTranslations(other);
+
+const navLinks = NAV_KEYS.map((key) => ({
+  key,
+  href: localePath(locale, NAV_PATHS[key]),
+  label: t.nav[key],
+}));
+
 const path = Astro.url.pathname;
+const home = localePath(locale, "/");
 const isActive = (href: string) => {
-  if (href === "/") return path === "/";
+  if (href === home) return path === home || path === `${home}/`;
   return path.startsWith(href);
 };
 ---
 
 <header class="topnav">
   <div class="shell topnav-row">
-    <a href="/" class="brand">
+    <a href={home} class="brand">
       <span class="brand-mark accent">m</span>
       <span>mert<span class="brand-host">.gg</span></span>
     </a>
 
-    <nav class="nav-links" aria-label="Birincil">
-      {SITE.navLinks.map((n) => (
+    <nav class="nav-links" aria-label={t.nav.primary}>
+      {navLinks.map((n) => (
         <a href={n.href} class={"nav-link" + (isActive(n.href) ? " active" : "")}>
           {n.label}
         </a>
@@ -25,17 +44,23 @@ const isActive = (href: string) => {
     </nav>
 
     <div style="display: flex; align-items: center; gap: 4px;">
-      <a class="icon-btn" href="/blog" aria-label="Ara" title="Ara">
+      <a class="icon-btn" href={localePath(locale, "/blog")} aria-label={t.nav.search} title={t.nav.search}>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
       </a>
-      <a class="icon-btn" href="/rss.xml" aria-label="RSS" title="RSS">
+      <a class="icon-btn" href={`/${locale}/rss.xml`} aria-label={t.nav.rss} title={t.nav.rss}>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.5" fill="currentColor"/></svg>
       </a>
-      <ThemeToggle />
-      <a class="btn btn-primary" href="/blog" style="margin-left: 6px;">
-        Yazıları gez
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      <a
+        class="icon-btn"
+        href={localePath(other, altPath)}
+        aria-label={t.nav.languageSwitchLabel}
+        title={otherT.htmlLang.toUpperCase()}
+        hreflang={other}
+        style="font-family: var(--font-mono); font-size: 11px; font-weight: 600;"
+      >
+        {other.toUpperCase()}
       </a>
+      <ThemeToggle locale={locale} />
     </div>
   </div>
 </header>

@@ -3,38 +3,51 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 import PostRow from "~/components/PostRow.astro";
 import { getPublishedPosts, getAllTags } from "~/lib/posts";
 import { tagLabel, BRAND } from "~/consts";
+import { LOCALES, type Locale, useTranslations, localePath } from "~/i18n";
 
 export const prerender = true;
 
-const posts = await getPublishedPosts();
-const tagCounts = await getAllTags();
+export async function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const locale = Astro.params.lang as Locale;
+const t = useTranslations(locale);
+
+const posts = await getPublishedPosts(locale);
+const tagCounts = await getAllTags(locale);
 const topTags = Array.from(tagCounts.entries())
   .sort((a, b) => b[1] - a[1])
   .slice(0, 8);
 ---
 
-<BaseLayout title={`Yazılar · ${BRAND}`} description="Tüm yazılar — Laravel, edge ve mimari notları.">
+<BaseLayout
+  locale={locale}
+  title={`${t.blogIndex.title} · ${BRAND}`}
+  description={t.blogIndex.descriptionMeta}
+  altPath="/blog"
+>
   <section class="blog-head">
     <div class="shell">
-      <span class="eyebrow">/yazılar — {posts.length} adet</span>
-      <h1>Arşiv</h1>
-      <p>Yazdığım her şey burada. Etiketle daralt, başlıkta ara, ya da sadece kaydırarak gez.</p>
+      <span class="eyebrow">{t.blogIndex.eyebrow(posts.length)}</span>
+      <h1>{t.blogIndex.heading}</h1>
+      <p>{t.blogIndex.lede}</p>
     </div>
   </section>
 
   <div class="shell">
     <div class="filter-bar" id="filter-bar">
       <div class="filter-chips">
-        <button class="tag active" data-filter-tag="" type="button">Hepsi · {posts.length}</button>
+        <button class="tag active" data-filter-tag="" type="button">{t.blogIndex.filterAll} · {posts.length}</button>
         {topTags.map(([slug, n]) => (
-          <button class="tag" data-filter-tag={slug} type="button">{tagLabel(slug)} · {n}</button>
+          <button class="tag" data-filter-tag={slug} type="button">{tagLabel(slug, locale)} · {n}</button>
         ))}
-        <a href="/tags" class="tag" style="border-style: dashed;">hepsi →</a>
+        <a href={localePath(locale, "/tags")} class="tag" style="border-style: dashed;">{t.blogIndex.filterAllMore}</a>
       </div>
       <div style="display: flex; gap: 8px; align-items: center;">
         <div class="search-box">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-          <input id="search-input" type="search" placeholder="Başlık veya etikette ara..." />
+          <input id="search-input" type="search" placeholder={t.blogIndex.searchPlaceholder} />
           <kbd>⌘K</kbd>
         </div>
       </div>
@@ -42,15 +55,10 @@ const topTags = Array.from(tagCounts.entries())
 
     <div class="postlist" id="postlist" style="padding-bottom: 64px;">
       {posts.map((p, i) => (
-        <PostRow
-          post={p}
-          index={i}
-          data-tags={p.data.tags.join(",")}
-          data-title={p.data.title.toLowerCase()}
-        />
+        <PostRow post={p} index={i} locale={locale} />
       ))}
     </div>
-    <div id="empty-state" class="empty" style="display: none;">// 0 sonuç. Aramayı değiştir veya filtreyi kaldır.</div>
+    <div id="empty-state" class="empty" style="display: none;">{t.blogIndex.emptyState}</div>
   </div>
 </BaseLayout>
 

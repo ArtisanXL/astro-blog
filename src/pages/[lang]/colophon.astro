@@ -1,0 +1,87 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { SITE, BRAND } from "~/consts";
+import { LOCALES, type Locale, useTranslations } from "~/i18n";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const locale = Astro.params.lang as Locale;
+const t = useTranslations(locale);
+const githubHref = SITE.social.find((s) => s.label === "GitHub")?.href;
+---
+
+<BaseLayout
+  locale={locale}
+  title={`${t.colophon.title} · ${BRAND}`}
+  description={t.colophon.descriptionMeta}
+  altPath="/colophon"
+>
+  <section class="blog-head">
+    <div class="shell">
+      <span class="eyebrow">{t.colophon.eyebrow}</span>
+      <h1>{t.colophon.heading}</h1>
+      <p set:html={t.colophon.ledeHtml(locale)} />
+    </div>
+  </section>
+
+  <div class="shell">
+    <section class="about-grid">
+      <h3>{t.colophon.code.h}</h3>
+      <div class="prose">
+        <ul>
+          {t.colophon.code.items.map((html) => <li set:html={html} />)}
+        </ul>
+      </div>
+    </section>
+
+    <section class="about-grid">
+      <h3>{t.colophon.hosting.h}</h3>
+      <div class="prose">
+        <ul>
+          {t.colophon.hosting.items.map((html) => <li set:html={html} />)}
+        </ul>
+      </div>
+    </section>
+
+    <section class="about-grid">
+      <h3>{t.colophon.typography.h}</h3>
+      <div class="prose">
+        <ul>
+          {t.colophon.typography.items.map((html) => <li set:html={html} />)}
+        </ul>
+      </div>
+    </section>
+
+    <section class="about-grid">
+      <h3>{t.colophon.seo.h}</h3>
+      <div class="prose">
+        <p set:html={t.colophon.seo.body} />
+      </div>
+    </section>
+
+    <section class="about-grid">
+      <h3>{t.colophon.writing.h}</h3>
+      <div class="prose">
+        <p set:html={t.colophon.writing.body} />
+      </div>
+    </section>
+
+    <section class="about-grid">
+      <h3>{t.colophon.source.h}</h3>
+      <div class="prose">
+        <p set:html={t.colophon.source.bodyHtml(githubHref, SITE.author.email)} />
+      </div>
+    </section>
+
+    <section class="about-grid">
+      <h3>{t.colophon.thanks.h}</h3>
+      <div class="prose">
+        <p set:html={t.colophon.thanks.body} />
+      </div>
+    </section>
+  </div>
+</BaseLayout>

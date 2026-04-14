@@ -1,31 +1,34 @@
 ---
-import type { Post } from "~/lib/posts";
+import { type Post, getPostUrl, estimateReadingTime } from "~/lib/posts";
 import { tagLabel } from "~/consts";
+import { type Locale, useTranslations } from "~/i18n";
 import { formatDate } from "~/lib/format";
-import { estimateReadingTime } from "~/lib/posts";
 
 interface Props {
   post: Post;
   index: number;
   total: number;
+  locale: Locale;
   eyebrow?: string;
 }
-const { post, index, total, eyebrow = "ÖNE ÇIKAN" } = Astro.props;
+const { post, index, total, locale, eyebrow } = Astro.props;
+const t = useTranslations(locale);
+const label = eyebrow ?? t.post.featuredEyebrow;
 const rt = estimateReadingTime(post.body);
 ---
 
-<a href={`/blog/${post.id}`} class="featured-cell">
+<a href={getPostUrl(post)} class="featured-cell">
   <div style="display: flex; align-items: center; justify-content: space-between;">
     <span class="index">{String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}</span>
-    <span class="eyebrow">{eyebrow}</span>
+    <span class="eyebrow">{label}</span>
   </div>
   <h3>{post.data.title}</h3>
   <p>{post.data.description}</p>
   <div class="tagrow">
-    {post.data.tags.slice(0, 3).map((t) => <span class="tag">{tagLabel(t)}</span>)}
+    {post.data.tags.slice(0, 3).map((tg) => <span class="tag">{tagLabel(tg, locale)}</span>)}
   </div>
   <div class="foot">
-    <span>{formatDate(post.data.pubDate)} · {rt.minutes} dk</span>
+    <span>{formatDate(post.data.pubDate, locale)} · {rt.minutes} {t.post.minutesShort}</span>
     <span class="arrow">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
     </span>

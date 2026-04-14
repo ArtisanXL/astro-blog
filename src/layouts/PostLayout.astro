@@ -1,36 +1,46 @@
 ---
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import Tag from "~/components/Tag.astro";
-import { SITE, tagLabel } from "~/consts";
+import { SITE } from "~/consts";
 import { formatDateLong } from "~/lib/format";
-import type { Post } from "~/lib/posts";
-import { estimateReadingTime } from "~/lib/posts";
+import { type Post, estimateReadingTime, getPostSlug, getPostUrl } from "~/lib/posts";
+import { type Locale, useTranslations, localePath } from "~/i18n";
 
 interface Props {
   post: Post;
+  locale: Locale;
   prev?: Post;
   next?: Post;
+  /** Slug of the counterpart post in the other locale, if it exists. */
+  altSlug?: string;
 }
 
-const { post, prev, next } = Astro.props;
+const { post, locale, prev, next, altSlug } = Astro.props;
+const t = useTranslations(locale);
 const rt = estimateReadingTime(post.body);
+const slug = getPostSlug(post);
+const altPath = altSlug ? `/blog/${altSlug}` : "/blog";
+const blogHref = localePath(locale, "/blog");
+const homeHref = localePath(locale, "/");
 ---
 
 <BaseLayout
+  locale={locale}
   title={`${post.data.title} · ${SITE.title}`}
   description={post.data.description}
+  altPath={altPath}
 >
   <div class="post-header">
     <div class="shell-narrow">
       <div class="breadcrumbs">
-        <a href="/">~</a>
+        <a href={homeHref}>~</a>
         <span>/</span>
-        <a href="/blog">blog</a>
+        <a href={blogHref}>{t.post.breadcrumbBlog}</a>
         <span>/</span>
-        <span style="color: var(--fg);">{post.id}</span>
+        <span style="color: var(--fg);">{slug}</span>
       </div>
       <div style="display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
-        {post.data.tags.map((t) => <Tag slug={t} />)}
+        {post.data.tags.map((tg) => <Tag slug={tg} locale={locale} />)}
       </div>
       <h1>{post.data.title}</h1>
       <p class="lede">{post.data.description}</p>
@@ -40,11 +50,11 @@ const rt = estimateReadingTime(post.body);
           {SITE.author.name}
         </span>
         <span>·</span>
-        <span>{formatDateLong(post.data.pubDate)}</span>
+        <span>{formatDateLong(post.data.pubDate, locale)}</span>
         <span>·</span>
         <span style="display: inline-flex; align-items: center; gap: 6px;">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-          {rt.minutes} dk okuma
+          {rt.minutes} {t.post.readingMinutes}
         </span>
       </div>
     </div>
@@ -57,13 +67,19 @@ const rt = estimateReadingTime(post.body);
       </article>
 
       <aside class="toc" id="toc">
-        <h5>İçindekiler</h5>
+        <h5>{t.post.toc}</h5>
         <ul id="toc-list"></ul>
         <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);">
-          <h5>Paylaş</h5>
+          <h5>{t.post.share}</h5>
           <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--muted);">
-            <a id="share-twitter" href="#" target="_blank" rel="noreferrer" style="color: var(--muted);">Twitter'da paylaş</a>
-            <button id="share-copy" class="btn-ghost" style="background: none; border: none; color: var(--muted); cursor: pointer; padding: 0; text-align: left; font: inherit;">Linki kopyala</button>
+            <a id="share-twitter" href="#" target="_blank" rel="noreferrer" style="color: var(--muted);">{t.post.shareTwitter}</a>
+            <button
+              id="share-copy"
+              class="btn-ghost"
+              data-copy={t.post.shareCopy}
+              data-copied={t.post.shareCopied}
+              style="background: none; border: none; color: var(--muted); cursor: pointer; padding: 0; text-align: left; font: inherit;"
+            >{t.post.shareCopy}</button>
           </div>
         </div>
       </aside>
@@ -73,13 +89,13 @@ const rt = estimateReadingTime(post.body);
   <div class="shell-narrow">
     <div class="post-foot">
       <div class="post-foot-grid">
-        <a class="foot-link" href={prev ? `/blog/${prev.id}` : "/blog"} style={prev ? "" : "opacity: 0.4;"}>
-          <span class="lbl">← Önceki</span>
-          <h4>{prev ? prev.data.title : "Listenin başındasın"}</h4>
+        <a class="foot-link" href={prev ? getPostUrl(prev) : blogHref} style={prev ? "" : "opacity: 0.4;"}>
+          <span class="lbl">{t.post.prev}</span>
+          <h4>{prev ? prev.data.title : t.post.atStart}</h4>
         </a>
-        <a class="foot-link next" href={next ? `/blog/${next.id}` : "/blog"} style={next ? "" : "opacity: 0.4;"}>
-          <span class="lbl">Sonraki →</span>
-          <h4>{next ? next.data.title : "Listenin sonundasın"}</h4>
+        <a class="foot-link next" href={next ? getPostUrl(next) : blogHref} style={next ? "" : "opacity: 0.4;"}>
+          <span class="lbl">{t.post.next}</span>
+          <h4>{next ? next.data.title : t.post.atEnd}</h4>
         </a>
       </div>
     </div>
@@ -126,10 +142,12 @@ const rt = estimateReadingTime(post.body);
     const copy = document.getElementById("share-copy");
     if (copy && !copy.dataset.bound) {
       copy.dataset.bound = "1";
+      const labelIdle = copy.dataset.copy || copy.textContent;
+      const labelDone = copy.dataset.copied || labelIdle;
       copy.addEventListener("click", () => {
         navigator.clipboard?.writeText(url);
-        copy.textContent = "Kopyalandı ✓";
-        setTimeout(() => (copy.textContent = "Linki kopyala"), 1400);
+        copy.textContent = labelDone;
+        setTimeout(() => (copy.textContent = labelIdle), 1400);
       });
     }
   }

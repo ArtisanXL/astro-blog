@@ -1,0 +1,53 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import PostRow from "~/components/PostRow.astro";
+import { getAllTags, getPostsByTag } from "~/lib/posts";
+import { tagLabel, BRAND } from "~/consts";
+import { LOCALES, type Locale, useTranslations, localePath } from "~/i18n";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const out: Array<{ params: { lang: Locale; tag: string }; props: { locale: Locale; tag: string } }> = [];
+  for (const lang of LOCALES) {
+    const counts = await getAllTags(lang);
+    for (const [tag] of counts) out.push({ params: { lang, tag }, props: { locale: lang, tag } });
+  }
+  return out;
+}
+
+const { locale, tag } = Astro.props;
+const t = useTranslations(locale);
+const posts = await getPostsByTag(tag, locale);
+const label = tagLabel(tag, locale);
+const homeHref = localePath(locale, "/");
+const tagsHref = localePath(locale, "/tags");
+---
+
+<BaseLayout
+  locale={locale}
+  title={`${label} · ${BRAND}`}
+  description={t.tagDetail.descriptionMeta(label)}
+  altPath={`/tags/${tag}`}
+>
+  <section class="blog-head">
+    <div class="shell">
+      <div class="breadcrumbs" style="margin-bottom: 16px;">
+        <a href={homeHref}>~</a>
+        <span>/</span>
+        <a href={tagsHref}>{t.tagDetail.breadcrumb}</a>
+        <span>/</span>
+        <span style="color: var(--fg);">{tag}</span>
+      </div>
+      <span class="eyebrow">{t.tagDetail.eyebrow(posts.length)}</span>
+      <h1>{label}</h1>
+      <p>{t.tagDetail.lede(label)}</p>
+    </div>
+  </section>
+
+  <div class="shell">
+    <div class="postlist" style="padding-bottom: 64px;">
+      {posts.map((p, i) => <PostRow post={p} index={i} locale={locale} />)}
+    </div>
+  </div>
+</BaseLayout>

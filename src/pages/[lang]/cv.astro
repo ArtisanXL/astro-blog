@@ -1,0 +1,59 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { BRAND } from "~/consts";
+import { LOCALES, type Locale, useTranslations } from "~/i18n";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const locale = Astro.params.lang as Locale;
+const t = useTranslations(locale);
+---
+
+<BaseLayout
+  locale={locale}
+  title={`${t.cv.title} · ${BRAND}`}
+  description={t.cv.descriptionMeta}
+  altPath="/cv"
+>
+  <section class="blog-head">
+    <div class="shell">
+      <span class="eyebrow">{t.cv.eyebrow}</span>
+      <h1>{t.cv.heading}</h1>
+      <p set:html={t.cv.ledeHtml(locale)} />
+    </div>
+  </section>
+
+  <div class="shell">
+    <section class="about-grid">
+      <h3>{t.cv.education.h}</h3>
+      <div class="prose">
+        <ul>
+          {t.cv.education.items.map((item) => <li set:html={item.html} />)}
+        </ul>
+      </div>
+    </section>
+
+    <section class="about-grid">
+      <h3>{t.cv.projects.h}</h3>
+      <div class="prose">
+        <p>{t.cv.projects.lede}</p>
+        <ul>
+          {t.cv.projects.items.map((item) => <li set:html={item.html} />)}
+        </ul>
+      </div>
+    </section>
+
+    <section class="about-grid">
+      <h3>{t.cv.awards.h}</h3>
+      <div class="prose">
+        <ul>
+          {t.cv.awards.items.map((item) => <li set:html={item.html} />)}
+        </ul>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

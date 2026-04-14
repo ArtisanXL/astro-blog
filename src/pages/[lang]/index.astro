@@ -1,0 +1,104 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import FeaturedCard from "~/components/FeaturedCard.astro";
+import PostRow from "~/components/PostRow.astro";
+import { getPublishedPosts, getFeaturedPosts } from "~/lib/posts";
+import { SITE } from "~/consts";
+import { LOCALES, type Locale, useTranslations, localePath } from "~/i18n";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const locale = Astro.params.lang as Locale;
+const t = useTranslations(locale);
+
+const featured = (await getFeaturedPosts(locale)).slice(0, 2);
+const recent = (await getPublishedPosts(locale)).slice(0, 8);
+---
+
+<BaseLayout locale={locale} altPath="/">
+  <section class="hero">
+    <div class="shell">
+      <div class="hero-meta">
+        <span class="dot"></span>
+        <span class="eyebrow">{t.home.eyebrow}</span>
+      </div>
+      <h1 class="hero-title">
+        {t.home.headline}
+      </h1>
+      <p class="hero-sub">
+        {t.home.intro(SITE.author.name)}
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href={localePath(locale, "/blog")}>
+          {t.home.ctaAll}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+        <a class="btn" href={localePath(locale, "/about")}>{t.home.ctaAbout}</a>
+      </div>
+    </div>
+  </section>
+
+  {featured.length > 0 && (
+    <section class="section" style="padding-top: 64px;">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">{t.home.featuredEyebrow}</span>
+            <h2>{t.home.featuredHeading}</h2>
+          </div>
+          <a href={localePath(locale, "/blog")} class="section-link">
+            {t.home.featuredLink}
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+        <div class="featured-grid">
+          {featured.map((p, i) => <FeaturedCard post={p} index={i} total={featured.length} locale={locale} />)}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="section">
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow">{t.home.feedEyebrow}</span>
+          <h2>{t.home.feedHeading}</h2>
+        </div>
+        <a href={localePath(locale, "/blog")} class="section-link">
+          {t.home.feedLink}
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <div class="postlist">
+        {recent.map((p, i) => <PostRow post={p} index={i} locale={locale} />)}
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="shell">
+      <div class="about-strip">
+        <div class="about-cell">
+          <span class="eyebrow">{t.home.nowEyebrow}</span>
+          <h3>{t.home.nowHeading}</h3>
+          <p>
+            {t.home.nowBody}
+          </p>
+        </div>
+        <div class="about-cell">
+          <span class="eyebrow">{t.home.stackEyebrow}</span>
+          <ul>
+            {t.home.stack.map(([k, v]) => (
+              <li><span class="k">{k}</span><span class="v">{v}</span></li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

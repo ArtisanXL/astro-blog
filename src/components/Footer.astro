@@ -1,27 +1,41 @@
 ---
-import { SITE } from "~/consts";
+import { SITE, NAV_KEYS, NAV_PATHS } from "~/consts";
+import { type Locale, useTranslations, localePath } from "~/i18n";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = useTranslations(locale);
+
+const navLinks = NAV_KEYS.map((key) => ({
+  key,
+  href: localePath(locale, NAV_PATHS[key]),
+  label: t.nav[key],
+}));
 ---
 
 <footer class="footer">
   <div class="shell">
     <div class="footer-grid">
       <div>
-        <a href="/" class="brand">
+        <a href={localePath(locale, "/")} class="brand">
           <span class="brand-mark accent">m</span>
           <span>mert<span class="brand-host">.gg</span></span>
         </a>
         <p style="color: var(--muted); margin-top: 14px; max-width: 38ch; font-size: 14px; line-height: 1.6;">
-          Edge'de Laravel, paket geliştirme ve gönderme zanaatı üzerine notlar.
+          {t.rss.description}
         </p>
       </div>
       <div>
-        <h4>Sayfalar</h4>
+        <h4>{t.footer.pages}</h4>
         <div class="footer-list">
-          {SITE.navLinks.map((n) => <a href={n.href}>{n.label}</a>)}
+          {navLinks.map((n) => <a href={n.href}>{n.label}</a>)}
         </div>
       </div>
       <div>
-        <h4>Bağlantı</h4>
+        <h4>{t.footer.connect}</h4>
         <div class="footer-list">
           <a href={SITE.author.github} target="_blank" rel="noreferrer">GitHub</a>
           <a href={SITE.author.twitter} target="_blank" rel="noreferrer">Twitter</a>
@@ -30,16 +44,14 @@ import { SITE } from "~/consts";
         </div>
       </div>
       <div>
-        <h4>Kolofon</h4>
+        <h4>{t.footer.behind}</h4>
         <div class="footer-list" style="color: var(--muted); font-size: 13.5px; line-height: 1.6;">
-          <span>Astro 6 · Cloudflare Workers</span>
-          <span>Geist · JetBrains Mono</span>
-          <span>Türkiye'den, edge'den</span>
+          {t.footer.stack.map((s) => <span>{s}</span>)}
         </div>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© {new Date().getFullYear()} {SITE.author.name} · Tüm yazılar CC BY 4.0</span>
+      <span>© {new Date().getFullYear()} {SITE.author.name} · {t.footer.copyrightSuffix}</span>
       <span>v6.3.3</span>
     </div>
   </div>

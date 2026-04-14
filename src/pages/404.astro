@@ -2,18 +2,21 @@
 export const prerender = true;
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
+import { DEFAULT_LOCALE, useTranslations, localePath } from "~/i18n";
+
+const locale = DEFAULT_LOCALE;
+const t = useTranslations(locale);
 ---
 
-<BaseLayout title="404 · Sayfa bulunamadı" description="Aradığın sayfa burada değil.">
+<BaseLayout locale={locale} title={t.notFound.title} description={t.notFound.descriptionMeta}>
   <section class="shell" style="padding: 96px 0;">
     <div style="max-width: 36rem;">
-      <span class="eyebrow">/404 — yok böyle bir sayfa</span>
-      <h1 style="margin-top: 12px;">Burada bir şey yok.</h1>
-      <p style="color: var(--muted); margin-top: 16px; line-height: 1.6;">
-        Aradığın sayfa taşınmış, silinmiş ya da hiç var olmamış olabilir.
-        Sıfırdan başlamak istersen <a href="/">ana sayfaya</a> dönebilir,
-        ya da <a href="/blog">arşive</a> göz atabilirsin.
-      </p>
+      <span class="eyebrow">{t.notFound.eyebrow}</span>
+      <h1 style="margin-top: 12px;">{t.notFound.heading}</h1>
+      <p
+        style="color: var(--muted); margin-top: 16px; line-height: 1.6;"
+        set:html={t.notFound.bodyHtml(localePath(locale, "/"), localePath(locale, "/blog"))}
+      />
     </div>
   </section>
 </BaseLayout>

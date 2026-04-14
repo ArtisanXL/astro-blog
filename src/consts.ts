@@ -1,35 +1,22 @@
 /**
- * Single source of truth for site-wide metadata.
- * Edit these values to brand your blog.
+ * Site-wide metadata that is language-neutral.
+ * Strings shown to readers live in `src/i18n/{tr,en}.ts`.
  */
 export const SITE = {
   url: "https://mert.gg",
   title: "mert.gg — Mertcan Dinler",
-  description:
-    "Edge'de Laravel, paket geliştirme ve gönderme zanaatı üzerine notlar.",
   author: {
     name: "Mertcan Dinler",
-    email: "hello@mert.gg",
+    email: "hi@mert.gg",
     handle: "@MertcanDinler0",
     twitter: "https://twitter.com/MertcanDinler0",
     github: "https://github.com/artisanxl",
     linkedin: "https://tr.linkedin.com/in/mertcandinler",
-    bio: "Laravel ekosisteminde yakından çalışıyor, ara sıra mobil tarafa (Flutter) sapıyor, üç beş paket yayınladım.",
     avatar: "/avatar.svg",
-    location: "Türkiye",
     initials: "MD",
   },
-  locale: "tr",
-  language: "tr-TR",
   themeColor: "#ff5c1f",
   ogImage: "/og-default.svg",
-  navLinks: [
-    { href: "/", label: "Anasayfa", key: "home" },
-    { href: "/blog", label: "Yazılar", key: "blog" },
-    { href: "/tags", label: "Etiketler", key: "tags" },
-    { href: "/about", label: "Hakkında", key: "about" },
-    { href: "/colophon", label: "Kolofon", key: "colophon" },
-  ],
   social: [
     { label: "GitHub", href: "https://github.com/artisanxl" },
     { label: "Twitter", href: "https://twitter.com/MertcanDinler0" },
@@ -39,24 +26,60 @@ export const SITE = {
 
 export type SiteConfig = typeof SITE;
 
-/** Çıplak host adı — "mert.gg". Başlık ekleri için. */
+/** Bare host name — "mert.gg". For title suffixes. */
 export const BRAND = new URL(SITE.url).host;
 
-/** Etiket sluglarını insan-okur isimlerine eşle. */
-export const TAG_LABELS: Record<string, string> = {
-  laravel: "Laravel",
-  php: "PHP",
-  livewire: "Livewire",
-  react: "React",
-  edge: "Edge Computing",
-  paket: "Paket Geliştirme",
-  performans: "Performans",
-  mimari: "Mimari",
-  filament: "Filament",
-  queue: "Queue & Jobs",
-  veritabani: "Veritabanı",
-  devops: "DevOps",
-  meta: "Meta",
+import type { Locale } from "~/i18n";
+
+/** Tag slugs → display labels. Tags are slugs in content; labels are per-locale. */
+const TAG_LABELS: Record<Locale, Record<string, string>> = {
+  tr: {
+    laravel: "Laravel",
+    php: "PHP",
+    livewire: "Livewire",
+    react: "React",
+    edge: "Edge Computing",
+    paket: "Paket Geliştirme",
+    performans: "Performans",
+    mimari: "Mimari",
+    filament: "Filament",
+    queue: "Queue & Jobs",
+    veritabani: "Veritabanı",
+    devops: "DevOps",
+    meta: "Meta",
+    yazılım: "Yazılım",
+  },
+  en: {
+    laravel: "Laravel",
+    php: "PHP",
+    livewire: "Livewire",
+    react: "React",
+    edge: "Edge Computing",
+    paket: "Package Development",
+    performans: "Performance",
+    mimari: "Architecture",
+    filament: "Filament",
+    queue: "Queue & Jobs",
+    veritabani: "Databases",
+    devops: "DevOps",
+    meta: "Meta",
+    yazılım: "Software",
+  },
 };
 
-export const tagLabel = (slug: string) => TAG_LABELS[slug] ?? slug;
+export const tagLabel = (slug: string, locale: Locale): string =>
+  TAG_LABELS[locale][slug] ?? slug;
+
+/** Nav entries are slug-keyed; labels resolve through `useTranslations(locale).nav`. */
+export const NAV_KEYS = ["home", "blog", "tags", "about", "cv", "colophon"] as const;
+export type NavKey = (typeof NAV_KEYS)[number];
+
+/** Path each nav key resolves to within a locale (prepend `/${locale}`). */
+export const NAV_PATHS: Record<NavKey, string> = {
+  home: "/",
+  blog: "/blog",
+  tags: "/tags",
+  about: "/about",
+  cv: "/cv",
+  colophon: "/colophon",
+};

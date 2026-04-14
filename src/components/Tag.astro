@@ -1,19 +1,21 @@
 ---
 import { tagLabel } from "~/consts";
+import { type Locale, localePath } from "~/i18n";
 
 interface Props {
   slug: string;
+  locale: Locale;
   active?: boolean;
   href?: string;
   as?: "a" | "span";
 }
 
-const { slug, active = false, href, as = "a" } = Astro.props;
-const link = href ?? `/tags/${slug}`;
+const { slug, locale, active = false, href, as = "a" } = Astro.props;
+const link = href ?? localePath(locale, `/tags/${slug}`);
 ---
 
 {as === "a" ? (
-  <a href={link} class={"tag" + (active ? " active" : "")}>{tagLabel(slug)}</a>
+  <a href={link} class={"tag" + (active ? " active" : "")}>{tagLabel(slug, locale)}</a>
 ) : (
-  <span class={"tag" + (active ? " active" : "")}>{tagLabel(slug)}</span>
+  <span class={"tag" + (active ? " active" : "")}>{tagLabel(slug, locale)}</span>
 )}

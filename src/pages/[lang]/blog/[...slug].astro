@@ -1,0 +1,58 @@
+---
+import PostLayout from "~/layouts/PostLayout.astro";
+import { getPublishedPosts, getPostSlug } from "~/lib/posts";
+import { LOCALES, type Locale } from "~/i18n";
+import { render } from "astro:content";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const out: Array<{
+    params: { lang: Locale; slug: string };
+    props: { post: any; locale: Locale; prev?: any; next?: any; altSlug?: string };
+  }> = [];
+
+  const buckets = new Map<Locale, Awaited<ReturnType<typeof getPublishedPosts>>>();
+  for (const lang of LOCALES) buckets.set(lang, await getPublishedPosts(lang));
+
+  // Build a translationKey → { locale → slug } index to find counterparts.
+  const altIndex = new Map<string, Partial<Record<Locale, string>>>();
+  for (const lang of LOCALES) {
+    for (const post of buckets.get(lang)!) {
+      const key = post.data.translationKey;
+      if (!key) continue;
+      const entry = altIndex.get(key) ?? {};
+      entry[lang] = getPostSlug(post);
+      altIndex.set(key, entry);
+    }
+  }
+
+  for (const lang of LOCALES) {
+    const posts = buckets.get(lang)!;
+    posts.forEach((post, i) => {
+      const slug = getPostSlug(post);
+      const key = post.data.translationKey;
+      const altLang: Locale = lang === "tr" ? "en" : "tr";
+      const altSlug = key ? altIndex.get(key)?.[altLang] : undefined;
+      out.push({
+        params: { lang, slug },
+        props: {
+          post,
+          locale: lang,
+          prev: posts[i + 1],
+          next: posts[i - 1],
+          altSlug,
+        },
+      });
+    });
+  }
+  return out;
+}
+
+const { post, locale, prev, next, altSlug } = Astro.props;
+const { Content } = await render(post);
+---
+
+<PostLayout post={post} locale={locale} prev={prev} next={next} altSlug={altSlug}>
+  <Content />
+</PostLayout>

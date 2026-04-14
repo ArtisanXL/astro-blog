@@ -1,19 +1,47 @@
 ---
 import { SITE } from "~/consts";
+import { type Locale, useTranslations, localePath, LOCALES } from "~/i18n";
 
 interface Props {
+  locale: Locale;
   title?: string;
   description?: string;
   image?: string;
   canonicalURL?: string;
+  /** Counterpart pathname (without locale prefix) for hreflang. */
+  altPath?: string;
 }
 
+const t = useTranslations(Astro.props.locale);
 const {
+  locale,
   title = SITE.title,
-  description = SITE.description,
+  description = t.rss.description,
   image = SITE.ogImage,
   canonicalURL = new URL(Astro.url.pathname, Astro.site ?? SITE.url).toString(),
+  altPath,
 } = Astro.props;
+
+const siteOrigin = Astro.site ?? new URL(SITE.url);
+// `altPath` is the path (no locale prefix) of this page in the OTHER locale.
+// For most pages the slug is the same in both locales (e.g. `/about`); for
+// posts it differs, hence the explicit prop.
+const alternates = altPath
+  ? LOCALES.map((l) => ({
+      locale: l,
+      href:
+        l === locale
+          ? new URL(Astro.url.pathname, siteOrigin).toString()
+          : new URL(localePath(l, altPath), siteOrigin).toString(),
+    }))
+  : null;
+const trPath =
+  altPath == null
+    ? null
+    : locale === "tr"
+      ? Astro.url.pathname
+      : localePath("tr", altPath);
+const xDefaultHref = trPath ? new URL(trPath, siteOrigin).toString() : null;
 ---
 
 <meta charset="utf-8" />
@@ -26,20 +54,28 @@ const {
 <link rel="canonical" href={canonicalURL} />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
+{alternates?.map((a) => (
+  <link rel="alternate" hreflang={a.locale} href={a.href} />
+))}
+{xDefaultHref && <link rel="alternate" hreflang="x-default" href={xDefaultHref} />}
+
 <!-- Open Graph -->
 <meta property="og:type" content="website" />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonicalURL} />
-<meta property="og:image" content={new URL(image, Astro.site ?? SITE.url).toString()} />
-<meta property="og:locale" content={SITE.language} />
+<meta property="og:image" content={new URL(image, siteOrigin).toString()} />
+<meta property="og:locale" content={t.ogLocale} />
 <meta property="og:site_name" content={SITE.title} />
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={new URL(image, Astro.site ?? SITE.url).toString()} />
+<meta name="twitter:image" content={new URL(image, siteOrigin).toString()} />
+
+<!-- Feeds -->
+<link rel="alternate" type="application/rss+xml" title={`${SITE.title} (${locale.toUpperCase()})`} href={`/${locale}/rss.xml`} />
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />

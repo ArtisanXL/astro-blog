@@ -10,6 +10,17 @@ export default defineConfig({
   site: SITE.url,
   output: "static",
   trailingSlash: "never",
+  i18n: {
+    defaultLocale: "tr",
+    locales: ["tr", "en"],
+    routing: {
+      prefixDefaultLocale: true,
+      redirectToDefaultLocale: true,
+    },
+  },
+  redirects: {
+    "/": "/tr/",
+  },
   build: {
     format: "directory",
     inlineStylesheets: "auto",
@@ -25,6 +36,10 @@ export default defineConfig({
       priority: 0.7,
       lastmod: new Date(),
       filter: (page) => !page.includes("/404"),
+      i18n: {
+        defaultLocale: "tr",
+        locales: { tr: "tr-TR", en: "en-US" },
+      },
     }),
   ],
   markdown: {

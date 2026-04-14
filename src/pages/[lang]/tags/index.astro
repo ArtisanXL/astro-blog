@@ -2,32 +2,45 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { getAllTags } from "~/lib/posts";
 import { tagLabel, BRAND } from "~/consts";
+import { LOCALES, type Locale, useTranslations, localePath } from "~/i18n";
 
 export const prerender = true;
 
-const counts = await getAllTags();
+export async function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const locale = Astro.params.lang as Locale;
+const t = useTranslations(locale);
+
+const counts = await getAllTags(locale);
 const tags = Array.from(counts.entries()).sort((a, b) => b[1] - a[1]);
 ---
 
-<BaseLayout title={`Etiketler · ${BRAND}`} description="Yazıların etiketlere göre dağılımı.">
+<BaseLayout
+  locale={locale}
+  title={`${t.tagsIndex.title} · ${BRAND}`}
+  description={t.tagsIndex.descriptionMeta}
+  altPath="/tags"
+>
   <section class="shell">
     <div class="tag-cloud">
-      <span class="eyebrow">/etiketler — {tags.length} adet</span>
-      <h1>Konuya göre.</h1>
+      <span class="eyebrow">{t.tagsIndex.eyebrow(tags.length)}</span>
+      <h1>{t.tagsIndex.heading}</h1>
       <p class="sub">
-        Yazıları sınıflandırırken kendime dürüst olmaya çalıştım. Üç beş etiket, çok değil.
+        {t.tagsIndex.lede}
       </p>
       <div class="tag-grid">
         {tags.map(([slug, n]) => (
-          <a href={`/tags/${slug}`} class="tag-cell">
+          <a href={localePath(locale, `/tags/${slug}`)} class="tag-cell">
             <div>
               <div style="display: flex; align-items: center; gap: 6px; color: var(--muted-2); font-family: var(--font-mono); font-size: 11px;">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg>
                 {slug}
               </div>
-              <div class="name" style="margin-top: 8px;">{tagLabel(slug)}</div>
+              <div class="name" style="margin-top: 8px;">{tagLabel(slug, locale)}</div>
             </div>
-            <span class="count tabular">{String(n).padStart(2, "0")} yazı</span>
+            <span class="count tabular">{String(n).padStart(2, "0")} {t.tagsIndex.postsSuffix}</span>
           </a>
         ))}
       </div>
