@@ -35,3 +35,5 @@ pagefind/
 # misc
 *.log
 /.claude/worktrees/
+/.claude/VOICE.md
+CLAUDE.md
