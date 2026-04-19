@@ -232,8 +232,8 @@ export const tr = {
     },
     source: {
       h: "Kaynak kod",
-      bodyHtml: (githubHref: string | undefined, email: string) =>
-        `Sitenin kaynağı ${githubHref ? `<a href="${githubHref}">GitHub'da</a>` : "GitHub'da"}. Bir şey kırıkken görürsen, bana <a href="mailto:${email}">${email}</a> adresinden yazabilirsin.`,
+      bodyHtml: (sourceHref: string, email: string) =>
+        `Sitenin kaynak kodunu merak ediyorsan <a href="${sourceHref}">buradan inceleyebilirsin</a>. Bir şey kırıkken görürsen, bana <a href="mailto:${email}">${email}</a> adresinden yazabilirsin.`,
     },
     thanks: {
       h: "Teşekkür",

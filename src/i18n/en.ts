@@ -234,8 +234,8 @@ export const en: Strings = {
     },
     source: {
       h: "Source",
-      bodyHtml: (githubHref: string | undefined, email: string) =>
-        `The site source is ${githubHref ? `<a href="${githubHref}">on GitHub</a>` : "on GitHub"}. If you spot something broken, write me at <a href="mailto:${email}">${email}</a>.`,
+      bodyHtml: (sourceHref: string, email: string) =>
+        `Curious about the source code? You can <a href="${sourceHref}">browse it here</a>. If you spot something broken, write me at <a href="mailto:${email}">${email}</a>.`,
     },
     thanks: {
       h: "Thanks",

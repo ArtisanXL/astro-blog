@@ -15,6 +15,7 @@ export const SITE = {
     avatar: "/avatar.svg",
     initials: "MD",
   },
+  sourceRepo: "https://github.com/ArtisanXL/astro-blog",
   themeColor: "#ff5c1f",
   ogImage: "/og-default.svg",
   social: [

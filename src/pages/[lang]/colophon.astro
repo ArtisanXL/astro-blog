@@ -11,7 +11,7 @@ export async function getStaticPaths() {
 
 const locale = Astro.params.lang as Locale;
 const t = useTranslations(locale);
-const githubHref = SITE.social.find((s) => s.label === "GitHub")?.href;
+const sourceHref = SITE.sourceRepo;
 ---
 
 <BaseLayout
@@ -73,7 +73,7 @@ const githubHref = SITE.social.find((s) => s.label === "GitHub")?.href;
     <section class="about-grid">
       <h3>{t.colophon.source.h}</h3>
       <div class="prose">
-        <p set:html={t.colophon.source.bodyHtml(githubHref, SITE.author.email)} />
+        <p set:html={t.colophon.source.bodyHtml(sourceHref, SITE.author.email)} />
       </div>
     </section>
 
