@@ -49,6 +49,8 @@ const TAG_LABELS: Record<Locale, Record<string, string>> = {
     devops: "DevOps",
     meta: "Meta",
     yazılım: "Yazılım",
+    astro: "Astro",
+    cloudflare: "Cloudflare",
   },
   en: {
     laravel: "Laravel",
@@ -65,6 +67,8 @@ const TAG_LABELS: Record<Locale, Record<string, string>> = {
     devops: "DevOps",
     meta: "Meta",
     yazılım: "Software",
+    astro: "Astro",
+    cloudflare: "Cloudflare",
   },
 };
 
