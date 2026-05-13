@@ -1,0 +1,18 @@
+---
+/**
+ * Renders a single `<script type="application/ld+json">` containing an
+ * `@graph` of schema.org entities. Used by `BaseHead` to emit one combined
+ * structured-data block per page.
+ */
+interface Props {
+  graph: object[];
+}
+
+const { graph } = Astro.props;
+const payload = {
+  "@context": "https://schema.org",
+  "@graph": graph,
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(payload)} is:inline />
