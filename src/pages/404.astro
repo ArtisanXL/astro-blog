@@ -8,7 +8,12 @@ const locale = DEFAULT_LOCALE;
 const t = useTranslations(locale);
 ---
 
-<BaseLayout locale={locale} title={t.notFound.title} description={t.notFound.descriptionMeta}>
+<BaseLayout
+  locale={locale}
+  title={t.notFound.title}
+  description={t.notFound.descriptionMeta}
+  noindex
+>
   <section class="shell" style="padding: 96px 0;">
     <div style="max-width: 36rem;">
       <span class="eyebrow">{t.notFound.eyebrow}</span>

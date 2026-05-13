@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Self-hosted fonts live alongside `global.css` import in `BaseLayout.astro`.
+   Tailwind v4's @import does not trigger Vite's asset resolver, so font URLs
+   from `@fontsource` packages are loaded via JS-side imports instead. */
+
 /* Dark mode toggled via .dark class on <html>. */
 @variant dark (&:where(.dark, .dark *));
 

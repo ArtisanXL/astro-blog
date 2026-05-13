@@ -1,5 +1,13 @@
 ---
 import "~/styles/global.css";
+// Self-hosted fonts. Vite fingerprints the woff2 assets so they ship from the
+// same origin (no render-blocking call to fonts.googleapis.com).
+import "@fontsource-variable/geist";
+import "@fontsource/jetbrains-mono/400.css";
+import "@fontsource/jetbrains-mono/500.css";
+import "@fontsource/jetbrains-mono/600.css";
+import "@fontsource/instrument-serif/400.css";
+import "@fontsource/instrument-serif/400-italic.css";
 import BaseHead from "~/components/BaseHead.astro";
 import Header from "~/components/Header.astro";
 import Footer from "~/components/Footer.astro";
@@ -13,9 +21,14 @@ interface Props {
   canonicalURL?: string;
   /** Counterpart path in the other locale, used by the language switcher and hreflang. */
   altPath?: string;
+  /** Hide the page from search engines. */
+  noindex?: boolean;
+  /** Page-specific JSON-LD entities merged into the global @graph. */
+  jsonLd?: object[];
 }
 
-const { locale, title, description, image, canonicalURL, altPath } = Astro.props;
+const { locale, title, description, image, canonicalURL, altPath, noindex, jsonLd } =
+  Astro.props;
 const t = useTranslations(locale);
 ---
 
@@ -29,6 +42,8 @@ const t = useTranslations(locale);
       image={image}
       canonicalURL={canonicalURL}
       altPath={altPath}
+      noindex={noindex}
+      jsonLd={jsonLd}
     />
   </head>
   <body>
