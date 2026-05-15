@@ -1,7 +1,8 @@
 ---
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { SITE, BRAND } from "~/consts";
-import { LOCALES, type Locale, useTranslations } from "~/i18n";
+import { LOCALES, type Locale, useTranslations, localePath } from "~/i18n";
+import { buildAboutPageEntity, buildBreadcrumbEntity } from "~/lib/schema";
 
 export const prerender = true;
 
@@ -11,6 +12,22 @@ export async function getStaticPaths() {
 
 const locale = Astro.params.lang as Locale;
 const t = useTranslations(locale);
+
+const siteOrigin = Astro.site ?? new URL(SITE.url);
+const canonicalUrl = new URL(Astro.url.pathname, siteOrigin).toString();
+const jsonLd = [
+  buildBreadcrumbEntity(
+    [
+      { name: t.nav.home, url: new URL(localePath(locale, "/"), siteOrigin).toString() },
+      { name: t.about.title, url: canonicalUrl },
+    ],
+    canonicalUrl,
+  ),
+  buildAboutPageEntity(canonicalUrl, locale, {
+    name: t.about.title,
+    description: t.about.descriptionMeta,
+  }),
+];
 ---
 
 <BaseLayout
@@ -18,6 +35,7 @@ const t = useTranslations(locale);
   title={`${t.about.title} · ${BRAND}`}
   description={t.about.descriptionMeta}
   altPath="/about"
+  jsonLd={jsonLd}
 >
   <div class="shell">
     <section class="about-hero">

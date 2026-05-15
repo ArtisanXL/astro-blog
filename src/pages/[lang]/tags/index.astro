@@ -1,8 +1,13 @@
 ---
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { getAllTags } from "~/lib/posts";
-import { tagLabel, BRAND } from "~/consts";
+import { tagLabel, SITE, BRAND } from "~/consts";
 import { LOCALES, type Locale, useTranslations, localePath } from "~/i18n";
+import {
+  buildBreadcrumbEntity,
+  buildCollectionPageEntity,
+  buildItemListEntity,
+} from "~/lib/schema";
 
 export const prerender = true;
 
@@ -15,6 +20,29 @@ const t = useTranslations(locale);
 
 const counts = await getAllTags(locale);
 const tags = Array.from(counts.entries()).sort((a, b) => b[1] - a[1]);
+
+const siteOrigin = Astro.site ?? new URL(SITE.url);
+const canonicalUrl = new URL(Astro.url.pathname, siteOrigin).toString();
+const jsonLd = [
+  buildBreadcrumbEntity(
+    [
+      { name: t.nav.home, url: new URL(localePath(locale, "/"), siteOrigin).toString() },
+      { name: t.tagsIndex.title, url: canonicalUrl },
+    ],
+    canonicalUrl,
+  ),
+  buildItemListEntity(
+    tags.map(([slug]) => ({
+      name: tagLabel(slug, locale),
+      url: localePath(locale, `/tags/${slug}`),
+    })),
+    canonicalUrl,
+  ),
+  buildCollectionPageEntity(canonicalUrl, locale, {
+    name: t.tagsIndex.title,
+    description: t.tagsIndex.descriptionMeta,
+  }),
+];
 ---
 
 <BaseLayout
@@ -22,6 +50,7 @@ const tags = Array.from(counts.entries()).sort((a, b) => b[1] - a[1]);
   title={`${t.tagsIndex.title} · ${BRAND}`}
   description={t.tagsIndex.descriptionMeta}
   altPath="/tags"
+  jsonLd={jsonLd}
 >
   <section class="shell">
     <div class="tag-cloud">

@@ -8,6 +8,7 @@ export const tr = {
     primary: "Birincil",
     home: "Anasayfa",
     blog: "Yazılar",
+    topics: "Konular",
     tags: "Etiketler",
     about: "Hakkımda",
     cv: "Özgeçmiş",
@@ -39,6 +40,8 @@ export const tr = {
     atStart: "Listenin başındasın",
     atEnd: "Listenin sonundasın",
     featuredEyebrow: "ÖNE ÇIKAN",
+    related: "İlgili yazılar",
+    partOf: "Şu serinin parçası:",
   },
   blogIndex: {
     title: "Yazılar",
@@ -74,6 +77,9 @@ export const tr = {
       `Aradığın sayfa taşınmış, silinmiş ya da hiç var olmamış olabilir. Sıfırdan başlamak istersen <a href="${homeHref}">ana sayfaya</a> dönebilir, ya da <a href="${blogHref}">arşive</a> göz atabilirsin.`,
   },
   home: {
+    title: "mert.gg — Laravel ve edge üzerine notlar",
+    descriptionMeta:
+      "Mertcan Dinler'in kişisel notları: Laravel, PHP ve Cloudflare Workers/D1/Queues üzerine yazılar; pratik deneyimler, ne işe yaradı ne yaramadı.",
     eyebrow: "/INDEX — selam, ben mert",
     headline: "Laravel Dev. Edge'e bulaştım. Notlarım burada.",
     intro: (name: string) =>
@@ -243,6 +249,59 @@ export const tr = {
   rss: {
     title: "mert.gg — Yazılar",
     description: "Laravel ve edge üzerine notlar. Ne işe yaradı, ne yaramadı.",
+  },
+  topicsIndex: {
+    title: "Konular",
+    descriptionMeta:
+      "Buradaki yazılar dört beş konunun etrafında dönüyor: Laravel'cilerin edge primitives ile imtihanı, Cloudflare Workers debug, Eloquent performansı, Astro-Cloudflare, PHP internals.",
+    eyebrow: "/konular",
+    heading: "Konuya göre, ama bir adım derin.",
+    lede: "Etiketler liste verir; konu sayfaları seriyi anlatır. Hangi yazıyı önce, hangisini sonra, neden.",
+    postsSuffix: "yazı",
+  },
+  topicDetail: {
+    breadcrumb: "konular",
+    eyebrow: (n: number) => `/konu — ${n} yazı`,
+    readNext: "Sırayla oku:",
+    backToTopics: "← Tüm konular",
+  },
+  /** Per-topic title + intro paragraph. Intros are static (~3-4 sentences). */
+  topics: {
+    "laravel-meets-edge": {
+      title: "Laravel ile edge'in kesiştiği yer",
+      descriptionMeta:
+        "Laravel V8 isolate'da koşmuyor — ama bir Laravel'cinin yan tarafta D1, Queues ve Workers'ı tartması ayrı hikaye. Bu seri o saha notları.",
+      intro:
+        "Laravel PHP-FPM'de çalışıyor, V8 isolate'da değil — yani \"Laravel'i edge'de çalıştırmak\" diye düz bir şey yok. Olan şu: tanıdık stack'in sınırına gelen bir Laravel'cinin yan tarafta edge primitives'lerini denemesi. D1 üstüne failed_jobs view'i kurmak, Cloudflare Queues'u sidecar workload için denemek, monoliti nerede tutacağına karar vermek. Bu seri o saha notları — neyi denedim, neyle çuvalladım, neyi geri çevirdim.",
+    },
+    "cloudflare-workers": {
+      title: "Cloudflare Workers'ı production'da debug etmek",
+      descriptionMeta:
+        "Smart Placement, cache header'ları, self-fetch tuzakları — Workers'ı canlıda kullanırken yakaladığım hatalar.",
+      intro:
+        "Workers'ı tutorial'da çalıştırmak kolay; production'da p99 grafiğinin neden tepki verdiğini anlamak öyle değil. Burada cache layer'larından deploy'un sessizce no-op olmasına, kendi kendini fetch eden Worker'dan Smart Placement'ın aksi yöne çalışmasına kadar — gerçek hata hikayeleri var.",
+    },
+    "eloquent-performance": {
+      title: "Eloquent performans desenleri",
+      descriptionMeta:
+        "N+1, lazy collection, withWhereHas, --pretend yalanları — Eloquent'i hızlı tutarken çıkardığım dersler.",
+      intro:
+        "Eloquent \"yavaş\" değil; sadece dikkatsiz kullanılınca yavaş. Bu seri, gerçek production'da denk geldiğim performans hatalarını ve nasıl çözdüğümü anlatıyor. Lazy collection ne zaman gerçekten lazım, N+1 ne zaman tehlike değil, --pretend neden yalan söyler.",
+    },
+    "astro-on-cloudflare": {
+      title: "Astro'yu Cloudflare'e adapter'sız göndermek",
+      descriptionMeta:
+        "Bu blogun kendi macerası: Astro 6 + Cloudflare Static Assets, adapter yok, view transitions, glob migration.",
+      intro:
+        "Bu blog Astro'yu Cloudflare Workers Static Assets üzerinde adapter olmadan çalıştırıyor. Bu yola çıkarken yazdığım notlar burada: glob'un kaldırılmasına nasıl geçiş yaptım, view transitions analytics'i nasıl yedi, neden adapter takmadım.",
+    },
+    "php-runtime": {
+      title: "PHP runtime ve dil",
+      descriptionMeta:
+        "PHP 8.5 pipe, opcache & JIT efsaneleri, composer autoload — dilin kendisi hakkında notlar.",
+      intro:
+        "PHP'nin son sürümleri kayda değer yenilikler getiriyor; ama yeniliklerin etrafında çok efsane dolanıyor. Bu seri pipe operatöründen JIT'in gerçekten ne kadar hızlandırdığına, composer autoload optimize'ının bedava olmamasına kadar — dilin runtime tarafına bakıyor.",
+    },
   },
 };
 

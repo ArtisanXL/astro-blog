@@ -10,6 +10,7 @@ export const en: Strings = {
     primary: "Primary",
     home: "Home",
     blog: "Writing",
+    topics: "Topics",
     tags: "Tags",
     about: "About",
     cv: "CV",
@@ -41,6 +42,8 @@ export const en: Strings = {
     atStart: "You're at the top of the list",
     atEnd: "You're at the end of the list",
     featuredEyebrow: "FEATURED",
+    related: "Related posts",
+    partOf: "Part of:",
   },
   blogIndex: {
     title: "Writing",
@@ -76,6 +79,9 @@ export const en: Strings = {
       `The page you're looking for may have moved, been deleted, or never existed. To start over, try the <a href="${homeHref}">home page</a>, or browse the <a href="${blogHref}">archive</a>.`,
   },
   home: {
+    title: "mert.gg — notes on Laravel and the edge",
+    descriptionMeta:
+      "Mertcan Dinler's personal notebook on Laravel, PHP, and Cloudflare Workers/D1/Queues — what worked, what didn't, with concrete numbers.",
     eyebrow: "/INDEX — hi, I'm mert",
     headline: "Laravel dev. Got into the edge. Notes live here.",
     intro: (name: string) =>
@@ -245,5 +251,57 @@ export const en: Strings = {
   rss: {
     title: "mert.gg — Writing",
     description: "Notes on Laravel and edge. What worked, what didn't.",
+  },
+  topicsIndex: {
+    title: "Topics",
+    descriptionMeta:
+      "The posts here orbit four or five themes: a Laravel dev trying edge primitives, Cloudflare Workers debugging, Eloquent performance, Astro on Cloudflare, PHP internals.",
+    eyebrow: "/topics",
+    heading: "By topic, but one layer deeper.",
+    lede: "Tags give you a list; topic pages tell the story. Which post first, which after, and why.",
+    postsSuffix: "posts",
+  },
+  topicDetail: {
+    breadcrumb: "topics",
+    eyebrow: (n: number) => `/topic — ${n} posts`,
+    readNext: "Read in order:",
+    backToTopics: "← All topics",
+  },
+  topics: {
+    "laravel-meets-edge": {
+      title: "Laravel meets the edge",
+      descriptionMeta:
+        "Laravel doesn't run on V8 isolates — but a Laravel dev weighing D1, Queues, and Workers next door is a different story. These are those field notes.",
+      intro:
+        "Laravel runs on PHP-FPM, not on V8 isolates — so \"Laravel on the edge\" isn't a literal thing. What is a thing: a Laravel dev hitting the limits of a familiar stack and trying edge primitives next door. Building a failed_jobs view on D1, trying Cloudflare Queues for a sidecar workload, deciding where the monolith stays. These are those field notes — what I tried, where I flopped, what I turned back from.",
+    },
+    "cloudflare-workers": {
+      title: "Debugging Cloudflare Workers in production",
+      descriptionMeta:
+        "Smart Placement, cache headers, self-fetch loops — the bugs I caught while running Workers in production.",
+      intro:
+        "Workers are easy to run in a tutorial; understanding why p99 just spiked in production is not. Here are the real debugging stories — from cache layers and a deploy that silently no-op'd, to a Worker that fetched itself and Smart Placement working in the wrong direction.",
+    },
+    "eloquent-performance": {
+      title: "Eloquent performance patterns",
+      descriptionMeta:
+        "N+1, lazy collections, withWhereHas, --pretend lies — what I've learned about keeping Eloquent fast.",
+      intro:
+        "Eloquent isn't \"slow\"; it's slow when used carelessly. This series is the production performance bugs I've actually hit and how I fixed them. When you really need a lazy collection, when N+1 isn't the enemy, why --pretend will lie to you.",
+    },
+    "astro-on-cloudflare": {
+      title: "Shipping Astro to Cloudflare without an adapter",
+      descriptionMeta:
+        "This blog's own adventure: Astro 6 + Cloudflare Static Assets, no adapter, view transitions, glob migration.",
+      intro:
+        "This blog runs Astro on Cloudflare Workers Static Assets, with no adapter. The notes from that journey are here: how I migrated off Astro.glob, how view transitions ate my analytics, why I didn't bolt on an adapter.",
+    },
+    "php-runtime": {
+      title: "PHP runtime and language",
+      descriptionMeta:
+        "PHP 8.5 pipe, opcache & JIT myths, composer autoload — notes on the language itself.",
+      intro:
+        "Recent PHP releases ship real wins; the myths around them are even larger. This series goes from the pipe operator to whether JIT actually speeds things up, to why composer autoload --optimize isn't free — the runtime side of the language.",
+    },
   },
 };

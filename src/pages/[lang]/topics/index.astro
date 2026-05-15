@@ -1,0 +1,71 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { BRAND } from "~/consts";
+import { LOCALES, type Locale, useTranslations, localePath } from "~/i18n";
+import { getPublishedPosts } from "~/lib/posts";
+import { TOPICS, getPostsInTopic } from "~/lib/topics";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  return LOCALES.map((lang) => ({ params: { lang } }));
+}
+
+const locale = Astro.params.lang as Locale;
+const t = useTranslations(locale);
+const allPosts = await getPublishedPosts(locale);
+
+const topics = TOPICS.map((td) => {
+  const posts = getPostsInTopic(td.slug, allPosts);
+  return {
+    slug: td.slug,
+    title: t.topics[td.slug].title,
+    intro: t.topics[td.slug].intro,
+    count: posts.length,
+  };
+}).filter((topic) => topic.count > 0);
+---
+
+<BaseLayout
+  locale={locale}
+  title={`${t.topicsIndex.title} · ${BRAND}`}
+  description={t.topicsIndex.descriptionMeta}
+  altPath="/topics"
+>
+  <section class="shell">
+    <div class="tag-cloud">
+      <span class="eyebrow">{t.topicsIndex.eyebrow}</span>
+      <h1>{t.topicsIndex.heading}</h1>
+      <p class="sub">{t.topicsIndex.lede}</p>
+
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 32px;">
+        {
+          topics.map((topic) => (
+            <a
+              href={localePath(locale, `/topics/${topic.slug}`)}
+              class="foot-link"
+              style="display: block; padding: 28px;"
+            >
+              <div
+                style="display: flex; justify-content: space-between; align-items: baseline; gap: 16px;"
+              >
+                <h4 style="margin: 0; font-size: 22px; letter-spacing: -0.015em;">
+                  {topic.title}
+                </h4>
+                <span
+                  class="tabular"
+                  style="font-family: var(--font-mono); font-size: 12px; color: var(--muted); white-space: nowrap;"
+                >
+                  {String(topic.count).padStart(2, "0")} {t.topicsIndex.postsSuffix}
+                </span>
+              </div>
+              <p style="color: var(--muted); margin: 12px 0 0; font-size: 15px; line-height: 1.55;">
+                {topic.intro}
+              </p>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,67 @@
+---
+import { type Post, getPostUrl } from "~/lib/posts";
+import { type Locale, useTranslations } from "~/i18n";
+import { tagLabel } from "~/consts";
+
+interface Props {
+  posts: Post[];
+  locale: Locale;
+}
+
+const { posts, locale } = Astro.props;
+const t = useTranslations(locale);
+
+if (posts.length === 0) return Astro.props && null;
+---
+
+{
+  posts.length > 0 && (
+    <section
+      class="shell"
+      style="padding: 56px 0 16px; border-top: 1px solid var(--border);"
+      aria-labelledby="related-heading"
+    >
+      <h2
+        id="related-heading"
+        style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 28px; font-weight: 500;"
+      >
+        {t.post.related}
+      </h2>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;">
+        {posts.map((p) => (
+          <a
+            class="foot-link"
+            href={getPostUrl(p)}
+            style="display: flex; flex-direction: column; height: 100%;"
+          >
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px;">
+              {p.data.tags.slice(0, 2).map((tg) => (
+                <span
+                  style="font-family: var(--font-mono); font-size: 10px; color: var(--muted); padding: 3px 8px; border: 1px solid var(--border); border-radius: 999px;"
+                >
+                  {tagLabel(tg, locale)}
+                </span>
+              ))}
+            </div>
+            <h4 style="margin: 0; font-size: 16px; line-height: 1.35; letter-spacing: -0.01em;">
+              {p.data.title}
+            </h4>
+            <p
+              style="color: var(--muted); margin: 10px 0 0; font-size: 13.5px; line-height: 1.5;"
+            >
+              {p.data.description}
+            </p>
+          </a>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  @media (max-width: 900px) {
+    [aria-labelledby="related-heading"] > div {
+      grid-template-columns: 1fr !important;
+    }
+  }
+</style>

@@ -19,7 +19,12 @@ const featured = (await getFeaturedPosts(locale)).slice(0, 2);
 const recent = (await getPublishedPosts(locale)).slice(0, 8);
 ---
 
-<BaseLayout locale={locale} altPath="/">
+<BaseLayout
+  locale={locale}
+  title={t.home.title}
+  description={t.home.descriptionMeta}
+  altPath="/"
+>
   <section class="hero">
     <div class="shell">
       <div class="hero-meta">

@@ -1,9 +1,14 @@
 ---
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import PostRow from "~/components/PostRow.astro";
-import { getAllTags, getPostsByTag } from "~/lib/posts";
-import { tagLabel, BRAND } from "~/consts";
+import { getAllTags, getPostsByTag, getPostUrl } from "~/lib/posts";
+import { tagLabel, SITE, BRAND } from "~/consts";
 import { LOCALES, type Locale, useTranslations, localePath } from "~/i18n";
+import {
+  buildBreadcrumbEntity,
+  buildCollectionPageEntity,
+  buildItemListEntity,
+} from "~/lib/schema";
 
 export const prerender = true;
 
@@ -22,13 +27,41 @@ const posts = await getPostsByTag(tag, locale);
 const label = tagLabel(tag, locale);
 const homeHref = localePath(locale, "/");
 const tagsHref = localePath(locale, "/tags");
+
+const siteOrigin = Astro.site ?? new URL(SITE.url);
+const canonicalUrl = new URL(Astro.url.pathname, siteOrigin).toString();
+const description = t.tagDetail.descriptionMeta(label);
+const jsonLd = [
+  buildBreadcrumbEntity(
+    [
+      { name: t.nav.home, url: new URL(homeHref, siteOrigin).toString() },
+      { name: t.tagsIndex.title, url: new URL(tagsHref, siteOrigin).toString() },
+      { name: label, url: canonicalUrl },
+    ],
+    canonicalUrl,
+  ),
+  buildItemListEntity(
+    posts.map((p) => ({
+      name: p.data.title,
+      url: getPostUrl(p),
+      description: p.data.description,
+      datePublished: p.data.pubDate.toISOString(),
+    })),
+    canonicalUrl,
+  ),
+  buildCollectionPageEntity(canonicalUrl, locale, {
+    name: label,
+    description,
+  }),
+];
 ---
 
 <BaseLayout
   locale={locale}
   title={`${label} · ${BRAND}`}
-  description={t.tagDetail.descriptionMeta(label)}
+  description={description}
   altPath={`/tags/${tag}`}
+  jsonLd={jsonLd}
 >
   <section class="blog-head">
     <div class="shell">

@@ -1,0 +1,106 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import PostRow from "~/components/PostRow.astro";
+import { SITE, BRAND } from "~/consts";
+import { LOCALES, type Locale, useTranslations, localePath } from "~/i18n";
+import { getPublishedPosts, getPostUrl } from "~/lib/posts";
+import { TOPIC_SLUGS, type TopicSlug, getPostsInTopic } from "~/lib/topics";
+import {
+  buildBreadcrumbEntity,
+  buildCollectionPageEntity,
+  buildItemListEntity,
+} from "~/lib/schema";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const out: Array<{
+    params: { lang: Locale; topic: TopicSlug };
+    props: { locale: Locale; topic: TopicSlug };
+  }> = [];
+  for (const lang of LOCALES) {
+    for (const slug of TOPIC_SLUGS) {
+      out.push({ params: { lang, topic: slug }, props: { locale: lang, topic: slug } });
+    }
+  }
+  return out;
+}
+
+const { locale, topic } = Astro.props;
+const t = useTranslations(locale);
+const allPosts = await getPublishedPosts(locale);
+const posts = getPostsInTopic(topic, allPosts).sort(
+  (a, b) => a.data.pubDate.valueOf() - b.data.pubDate.valueOf(),
+); // chronological — earliest first (read in order)
+
+const meta = t.topics[topic];
+const homeHref = localePath(locale, "/");
+const topicsHref = localePath(locale, "/topics");
+
+const siteOrigin = Astro.site ?? new URL(SITE.url);
+const canonicalUrl = new URL(Astro.url.pathname, siteOrigin).toString();
+const description = `${meta.intro.split(".")[0]}.`;
+
+const jsonLd = [
+  buildBreadcrumbEntity(
+    [
+      { name: t.nav.home, url: new URL(homeHref, siteOrigin).toString() },
+      { name: t.topicsIndex.title, url: new URL(topicsHref, siteOrigin).toString() },
+      { name: meta.title, url: canonicalUrl },
+    ],
+    canonicalUrl,
+  ),
+  buildItemListEntity(
+    posts.map((p) => ({
+      name: p.data.title,
+      url: getPostUrl(p),
+      description: p.data.description,
+      datePublished: p.data.pubDate.toISOString(),
+    })),
+    canonicalUrl,
+  ),
+  buildCollectionPageEntity(canonicalUrl, locale, {
+    name: meta.title,
+    description,
+  }),
+];
+---
+
+<BaseLayout
+  locale={locale}
+  title={`${meta.title} · ${BRAND}`}
+  description={meta.descriptionMeta}
+  altPath={`/topics/${topic}`}
+  jsonLd={jsonLd}
+>
+  <section class="blog-head">
+    <div class="shell">
+      <div class="breadcrumbs" style="margin-bottom: 16px;">
+        <a href={homeHref}>~</a>
+        <span>/</span>
+        <a href={topicsHref}>{t.topicDetail.breadcrumb}</a>
+        <span>/</span>
+        <span style="color: var(--fg);">{topic}</span>
+      </div>
+      <span class="eyebrow">{t.topicDetail.eyebrow(posts.length)}</span>
+      <h1>{meta.title}</h1>
+      <p style="max-width: 64ch;">{meta.intro}</p>
+    </div>
+  </section>
+
+  <div class="shell">
+    <div
+      style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 28px 0 8px;"
+    >
+      {t.topicDetail.readNext}
+    </div>
+    <div class="postlist" style="padding-bottom: 32px;">
+      {posts.map((p, i) => <PostRow post={p} index={i} locale={locale} />)}
+    </div>
+    <div style="padding-bottom: 64px;">
+      <a href={topicsHref} style="color: var(--muted); font-size: 14px;">
+        {t.topicDetail.backToTopics}
+      </a>
+    </div>
+  </div>
+</BaseLayout>

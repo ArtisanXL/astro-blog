@@ -17,7 +17,7 @@ export const SITE = {
   },
   sourceRepo: "https://github.com/ArtisanXL/astro-blog",
   themeColor: "#ff5c1f",
-  ogImage: "/og-default.svg",
+  ogImage: "/og-default.png",
   social: [
     { label: "GitHub", href: "https://github.com/artisanxl" },
     { label: "Twitter", href: "https://twitter.com/MertcanDinler0" },
@@ -76,13 +76,22 @@ export const tagLabel = (slug: string, locale: Locale): string =>
   TAG_LABELS[locale][slug] ?? slug;
 
 /** Nav entries are slug-keyed; labels resolve through `useTranslations(locale).nav`. */
-export const NAV_KEYS = ["home", "blog", "tags", "about", "cv", "colophon"] as const;
+export const NAV_KEYS = [
+  "home",
+  "blog",
+  "topics",
+  "tags",
+  "about",
+  "cv",
+  "colophon",
+] as const;
 export type NavKey = (typeof NAV_KEYS)[number];
 
 /** Path each nav key resolves to within a locale (prepend `/${locale}`). */
 export const NAV_PATHS: Record<NavKey, string> = {
   home: "/",
   blog: "/blog",
+  topics: "/topics",
   tags: "/tags",
   about: "/about",
   cv: "/cv",

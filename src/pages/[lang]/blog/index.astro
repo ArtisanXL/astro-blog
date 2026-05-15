@@ -1,9 +1,14 @@
 ---
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import PostRow from "~/components/PostRow.astro";
-import { getPublishedPosts, getAllTags } from "~/lib/posts";
-import { tagLabel, BRAND } from "~/consts";
+import { getPublishedPosts, getAllTags, getPostUrl } from "~/lib/posts";
+import { tagLabel, SITE, BRAND } from "~/consts";
 import { LOCALES, type Locale, useTranslations, localePath } from "~/i18n";
+import {
+  buildBlogEntity,
+  buildBreadcrumbEntity,
+  buildItemListEntity,
+} from "~/lib/schema";
 
 export const prerender = true;
 
@@ -19,6 +24,31 @@ const tagCounts = await getAllTags(locale);
 const topTags = Array.from(tagCounts.entries())
   .sort((a, b) => b[1] - a[1])
   .slice(0, 8);
+
+const siteOrigin = Astro.site ?? new URL(SITE.url);
+const canonicalUrl = new URL(Astro.url.pathname, siteOrigin).toString();
+const jsonLd = [
+  buildBreadcrumbEntity(
+    [
+      { name: t.nav.home, url: new URL(localePath(locale, "/"), siteOrigin).toString() },
+      { name: t.blogIndex.title, url: canonicalUrl },
+    ],
+    canonicalUrl,
+  ),
+  buildItemListEntity(
+    posts.slice(0, 10).map((p) => ({
+      name: p.data.title,
+      url: getPostUrl(p),
+      description: p.data.description,
+      datePublished: p.data.pubDate.toISOString(),
+    })),
+    canonicalUrl,
+  ),
+  buildBlogEntity(canonicalUrl, locale, {
+    name: t.blogIndex.title,
+    description: t.blogIndex.descriptionMeta,
+  }),
+];
 ---
 
 <BaseLayout
@@ -26,6 +56,7 @@ const topTags = Array.from(tagCounts.entries())
   title={`${t.blogIndex.title} · ${BRAND}`}
   description={t.blogIndex.descriptionMeta}
   altPath="/blog"
+  jsonLd={jsonLd}
 >
   <section class="blog-head">
     <div class="shell">

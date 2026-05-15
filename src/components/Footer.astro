@@ -1,6 +1,7 @@
 ---
 import { SITE, NAV_KEYS, NAV_PATHS } from "~/consts";
 import { type Locale, useTranslations, localePath } from "~/i18n";
+import { TOPIC_SLUGS } from "~/lib/topics";
 
 interface Props {
   locale: Locale;
@@ -14,6 +15,12 @@ const navLinks = NAV_KEYS.map((key) => ({
   href: localePath(locale, NAV_PATHS[key]),
   label: t.nav[key],
 }));
+
+const topicLinks = TOPIC_SLUGS.map((slug) => ({
+  slug,
+  href: localePath(locale, `/topics/${slug}`),
+  label: t.topics[slug].title,
+}));
 ---
 
 <footer class="footer">
@@ -24,7 +31,9 @@ const navLinks = NAV_KEYS.map((key) => ({
           <span class="brand-mark accent">m</span>
           <span>mert<span class="brand-host">.gg</span></span>
         </a>
-        <p style="color: var(--muted); margin-top: 14px; max-width: 38ch; font-size: 14px; line-height: 1.6;">
+        <p
+          style="color: var(--muted); margin-top: 14px; max-width: 38ch; font-size: 14px; line-height: 1.6;"
+        >
           {t.rss.description}
         </p>
       </div>
@@ -32,6 +41,14 @@ const navLinks = NAV_KEYS.map((key) => ({
         <h4>{t.footer.pages}</h4>
         <div class="footer-list">
           {navLinks.map((n) => <a href={n.href}>{n.label}</a>)}
+        </div>
+      </div>
+      <div>
+        <h4>
+          <a href={localePath(locale, "/topics")}>{t.topicsIndex.title}</a>
+        </h4>
+        <div class="footer-list">
+          {topicLinks.map((tp) => <a href={tp.href}>{tp.label}</a>)}
         </div>
       </div>
       <div>
@@ -43,17 +60,12 @@ const navLinks = NAV_KEYS.map((key) => ({
           <a href={`mailto:${SITE.author.email}`}>{SITE.author.email}</a>
         </div>
       </div>
-      <div>
-        <h4>
-          <a href={localePath(locale, NAV_PATHS.colophon)}>{t.footer.behind}</a>
-        </h4>
-        <div class="footer-list" style="color: var(--muted); font-size: 13.5px; line-height: 1.6;">
-          {t.footer.stack.map((s) => <span>{s}</span>)}
-        </div>
-      </div>
     </div>
     <div class="footer-bottom">
-      <span>© {new Date().getFullYear()} {SITE.author.name} · {t.footer.copyrightSuffix}</span>
+      <span>
+        © {new Date().getFullYear()}
+        {SITE.author.name} · {t.footer.copyrightSuffix}
+      </span>
       <span>v6.3.3</span>
     </div>
   </div>

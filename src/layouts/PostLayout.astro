@@ -1,10 +1,20 @@
 ---
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import Tag from "~/components/Tag.astro";
-import { SITE } from "~/consts";
+import RelatedPosts from "~/components/RelatedPosts.astro";
+import { SITE, BRAND } from "~/consts";
 import { formatDateLong } from "~/lib/format";
-import { type Post, estimateReadingTime, getPostSlug, getPostUrl } from "~/lib/posts";
+import {
+  type Post,
+  estimateReadingTime,
+  getPostSlug,
+  getPostUrl,
+  getPublishedPosts,
+} from "~/lib/posts";
 import { type Locale, useTranslations, localePath } from "~/i18n";
+import { buildPostGraph, postOgImageUrl } from "~/lib/schema";
+import { findRelated } from "~/lib/related";
+import { getTopicsForPost } from "~/lib/topics";
 
 interface Props {
   post: Post;
@@ -22,13 +32,47 @@ const slug = getPostSlug(post);
 const altPath = altSlug ? `/blog/${altSlug}` : "/blog";
 const blogHref = localePath(locale, "/blog");
 const homeHref = localePath(locale, "/");
+
+// Topic membership — rendered as small "Part of:" rosettes under the title.
+const postTopics = getTopicsForPost(post);
+const topicLinks = postTopics.map((slug) => ({
+  slug,
+  title: t.topics[slug].title,
+  href: localePath(locale, `/topics/${slug}`),
+}));
+
+// Related posts via tag Jaccard similarity (top 3, same locale).
+const allPosts = await getPublishedPosts(locale);
+const related = findRelated(post, allPosts, 3).map((r) => r.post);
+
+// Canonical: explicit override from frontmatter wins; otherwise current URL.
+const siteOrigin = Astro.site ?? new URL(SITE.url);
+const defaultCanonical = new URL(Astro.url.pathname, siteOrigin).toString();
+const canonicalURL = post.data.canonical ?? defaultCanonical;
+const ogImage = postOgImageUrl(post);
+
+// Structured data — BreadcrumbList + WebPage + BlogPosting in one @graph.
+const jsonLd = buildPostGraph(post, {
+  canonicalUrl: canonicalURL,
+  imageUrl: ogImage,
+  locale,
+  breadcrumb: [
+    { name: t.nav.home, url: new URL(homeHref, siteOrigin).toString() },
+    { name: t.nav.blog, url: new URL(blogHref, siteOrigin).toString() },
+    { name: post.data.title, url: canonicalURL },
+  ],
+});
 ---
 
 <BaseLayout
   locale={locale}
-  title={`${post.data.title} · ${SITE.title}`}
+  title={`${post.data.title} · ${BRAND}`}
   description={post.data.description}
+  image={ogImage}
+  canonicalURL={canonicalURL}
   altPath={altPath}
+  noindex={post.data.noindex}
+  jsonLd={jsonLd}
 >
   <div class="post-header">
     <div class="shell">
@@ -42,6 +86,21 @@ const homeHref = localePath(locale, "/");
       <div style="display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
         {post.data.tags.map((tg) => <Tag slug={tg} locale={locale} />)}
       </div>
+      {topicLinks.length > 0 && (
+        <div
+          style="display: flex; gap: 12px; align-items: baseline; margin-bottom: 14px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 11px; color: var(--muted);"
+        >
+          <span style="letter-spacing: 0.05em; text-transform: uppercase;">{t.post.partOf}</span>
+          {topicLinks.map((tp) => (
+            <a
+              href={tp.href}
+              style="color: var(--muted); border-bottom: 1px solid var(--border); padding-bottom: 1px;"
+            >
+              {tp.title}
+            </a>
+          ))}
+        </div>
+      )}
       <h1>{post.data.title}</h1>
       <p class="lede">{post.data.description}</p>
       <div class="post-meta">
@@ -85,6 +144,8 @@ const homeHref = localePath(locale, "/");
       </aside>
     </div>
   </div>
+
+  <RelatedPosts posts={related} locale={locale} />
 
   <div class="shell">
     <div class="post-foot">
