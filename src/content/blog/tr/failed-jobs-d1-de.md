@@ -1,12 +1,12 @@
 ---
 title: "Bir akşamda D1 üzerinde failed_jobs view'ı kurdum"
-description: "Queue yazısı el-yapımı observability ile bitiyordu. Bu, o build. Bir D1 tablosu, bir DLQ consumer, bir HTML view, 150 satır altında."
+description: "Cloudflare Queues'un DLQ'su mesaj veriyor, hatayı vermiyor. Bir D1 tablosu, bir DLQ consumer, bir HTML view, 150 satır altında: Laravel'in `failed_jobs` tablosunun yerine geçen şey."
 pubDate: 2026-04-20
 tags: ["cloudflare", "queue", "veritabani", "edge"]
 translationKey: "failed-jobs-on-d1"
 ---
 
-Bir önceki yazıda Cloudflare Queues'tan bahsetmiş ve "Cloudflare'in vermediği şeyi el ile yaptım" diye bitirmiştim. Bu, o build. Bir akşam, üç dosya.
+Bir akşam, üç dosya.
 
 Laravel queues'tan Cloudflare Queues'a geçerken kaybettiğim şey `failed_jobs` tablosuydu. Laravel'de retry'ları biten her job otomatik o tabloya düşer: payload, exception, stack trace, failed-at timestamp. Normal tablo gibi sorgularsın, retry'larsın, ondan öğrenirsin. Cloudflare Queues'un dead-letter queue'su var. DLQ'dan consume edebilirsin ama failure'ın ne olduğuna dair built-in kayıt yok. Message body geliyor, retry'ları bitiren exception gelmiyor.
 

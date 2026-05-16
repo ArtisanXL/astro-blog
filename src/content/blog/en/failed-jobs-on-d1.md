@@ -1,12 +1,12 @@
 ---
 title: "I built a failed_jobs view on D1 in one evening"
-description: "The queues post ended with hand-built observability. This is the build. A D1 table, a DLQ consumer, an HTML view, all under 150 lines."
+description: "Cloudflare Queues' DLQ gives you the message, not the error. A D1 table, a DLQ consumer, an HTML view, all under 150 lines — what stands in for Laravel's `failed_jobs` table."
 pubDate: 2026-04-20
 tags: ["cloudflare", "queue", "veritabani", "edge"]
 translationKey: "failed-jobs-on-d1"
 ---
 
-A post back I wrote about Cloudflare Queues and ended with "I'd hand-built what Cloudflare wasn't giving me." This is that build. One evening, three files.
+One evening, three files.
 
 The thing I'd lost moving from Laravel queues was the `failed_jobs` table. In Laravel that's an automatic dumping ground for any job that exhausts retries: payload, exception, stack trace, failed-at timestamp. You query it like a normal table, retry from it, learn from it. Cloudflare Queues has a dead-letter queue. You can consume from the DLQ, but there's no built-in record of what the failure actually was. You get the message body. You don't get the exception that caused the retries to exhaust.
 
