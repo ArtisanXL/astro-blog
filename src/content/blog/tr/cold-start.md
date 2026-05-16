@@ -4,6 +4,7 @@ description: "İlk Worker'ımı deploy ettiğim gün p99'a panikledim. Bir hafta
 pubDate: 2026-05-07
 tags: ["edge", "performans"]
 translationKey: "cold-start-peace"
+featured: true
 ---
 
 İlk Worker'ımı deploy ettim, dashboard'a baktım. p99 PHP-FPM'deki sayının birkaç katı. Panikledim. Yıllarca p99'a göre yaşamış bir adamım, sayı tanıdık değildi. Geç saate kadar açıktım. Cold start mı, network mi, KV mi? Bilmiyordum.
