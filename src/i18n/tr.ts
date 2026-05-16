@@ -75,7 +75,7 @@ export const tr = {
   },
   home: {
     eyebrow: "/INDEX — selam, ben mert",
-    headline: "Laravel yazıyorum. Edge'e bulaştım. Notlarım burada.",
+    headline: "Laravel Dev. Edge'e bulaştım. Notlarım burada.",
     intro: (name: string) =>
       `Selam, ben ${name}. Bir süredir edge üstüne kafa yoruyorum. Burada çoğunlukla uğraştığım şeyin notları var; ne işe yaradı, ne yaramadı.`,
     ctaAll: "Tüm yazılar",
