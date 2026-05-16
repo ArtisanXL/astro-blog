@@ -15,7 +15,7 @@ export function getPostSlug(post: Post): string {
 }
 
 export function getPostUrl(post: Post): string {
-  return `/${getPostLang(post)}/blog/${getPostSlug(post)}`;
+  return `/${getPostLang(post)}/blog/${getPostSlug(post)}/`;
 }
 
 export async function getPublishedPosts(locale?: Locale): Promise<Post[]> {

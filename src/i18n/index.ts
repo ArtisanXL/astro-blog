@@ -26,8 +26,10 @@ export function otherLocale(locale: Locale): Locale {
   return locale === "tr" ? "en" : "tr";
 }
 
-/** Prefix-aware link helper. `localePath("tr", "/blog")` → `/tr/blog`. */
+/** Prefix-aware link helper. `localePath("tr", "/blog")` → `/tr/blog/`. */
 export function localePath(locale: Locale, path: string = "/"): string {
-  const clean = path === "/" ? "" : path.startsWith("/") ? path : `/${path}`;
-  return `/${locale}${clean}`;
+  if (path === "/" || path === "") return `/${locale}/`;
+  const prefixed = path.startsWith("/") ? path : `/${path}`;
+  const withSlash = prefixed.endsWith("/") ? prefixed : `${prefixed}/`;
+  return `/${locale}${withSlash}`;
 }

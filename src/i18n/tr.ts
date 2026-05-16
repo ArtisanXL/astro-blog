@@ -143,7 +143,7 @@ export const tr = {
       bodyHtml: (email: string) =>
         `İş, danışmanlık ya da "şu yazını okudum" demek için <a href="mailto:${email}">${email}</a>. Mail atmaktan çekinme.`,
       colophonHtml: (lang: string) =>
-        `Sitenin nasıl yapıldığı <a href="/${lang}/colophon">Perde arkası</a>'nda.`,
+        `Sitenin nasıl yapıldığı <a href="/${lang}/colophon/">Perde arkası</a>'nda.`,
     },
   },
   cv: {
@@ -152,7 +152,7 @@ export const tr = {
     eyebrow: "/özgeçmiş — neler yaptım",
     heading: "Özgeçmiş",
     ledeHtml: (lang: string) =>
-      `Birkaç eğitim, birkaç proje, birkaç ödül. Tam liste değil, kısa bir özet. Daha kişisel bir anlatımı <a class="link" href="/${lang}/about">hakkımda</a> sayfasında bulabilirsin.`,
+      `Birkaç eğitim, birkaç proje, birkaç ödül. Tam liste değil, kısa bir özet. Daha kişisel bir anlatımı <a class="link" href="/${lang}/about/">hakkımda</a> sayfasında bulabilirsin.`,
     education: {
       h: "Eğitim",
       items: [

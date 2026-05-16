@@ -2,9 +2,14 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import FeaturedCard from "~/components/FeaturedCard.astro";
 import PostRow from "~/components/PostRow.astro";
-import { getPublishedPosts, getFeaturedPosts } from "~/lib/posts";
+import { getPublishedPosts, getFeaturedPosts, getPostUrl } from "~/lib/posts";
 import { SITE } from "~/consts";
 import { LOCALES, type Locale, useTranslations, localePath } from "~/i18n";
+import {
+  buildBlogEntity,
+  buildItemListEntity,
+  buildWebPageEntity,
+} from "~/lib/schema";
 
 export const prerender = true;
 
@@ -17,6 +22,29 @@ const t = useTranslations(locale);
 
 const featured = (await getFeaturedPosts(locale)).slice(0, 2);
 const recent = (await getPublishedPosts(locale)).slice(0, 8);
+
+const siteOrigin = Astro.site ?? new URL(SITE.url);
+const canonicalUrl = new URL(Astro.url.pathname, siteOrigin).toString();
+const jsonLd = [
+  buildWebPageEntity(canonicalUrl, locale, {
+    name: t.home.title,
+    description: t.home.descriptionMeta,
+    breadcrumb: false,
+  }),
+  buildBlogEntity(canonicalUrl, locale, {
+    name: SITE.title,
+    description: t.home.descriptionMeta,
+  }),
+  buildItemListEntity(
+    recent.map((p) => ({
+      name: p.data.title,
+      url: getPostUrl(p),
+      description: p.data.description,
+      datePublished: p.data.pubDate.toISOString(),
+    })),
+    canonicalUrl,
+  ),
+];
 ---
 
 <BaseLayout
@@ -24,6 +52,7 @@ const recent = (await getPublishedPosts(locale)).slice(0, 8);
   title={t.home.title}
   description={t.home.descriptionMeta}
   altPath="/"
+  jsonLd={jsonLd}
 >
   <section class="hero">
     <div class="shell">

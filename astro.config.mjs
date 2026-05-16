@@ -9,7 +9,7 @@ import { SITE } from "./src/consts";
 export default defineConfig({
   site: SITE.url,
   output: "static",
-  trailingSlash: "never",
+  trailingSlash: "always",
   i18n: {
     defaultLocale: "tr",
     locales: ["tr", "en"],

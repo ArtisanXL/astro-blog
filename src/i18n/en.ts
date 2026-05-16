@@ -145,7 +145,7 @@ export const en: Strings = {
       bodyHtml: (email: string) =>
         `For work, consulting, or just to say "I read your post" — <a href="mailto:${email}">${email}</a>. Don't hesitate to write.`,
       colophonHtml: (lang: string) =>
-        `How this site is built lives in the <a href="/${lang}/colophon">colophon</a>.`,
+        `How this site is built lives in the <a href="/${lang}/colophon/">colophon</a>.`,
     },
   },
   cv: {
@@ -154,7 +154,7 @@ export const en: Strings = {
     eyebrow: "/cv — what I've done",
     heading: "CV",
     ledeHtml: (lang: string) =>
-      `A bit of education, a few projects, a few awards. Not exhaustive — a short summary. For a more personal version, see <a class="link" href="/${lang}/about">about</a>.`,
+      `A bit of education, a few projects, a few awards. Not exhaustive — a short summary. For a more personal version, see <a class="link" href="/${lang}/about/">about</a>.`,
     education: {
       h: "Education",
       items: [

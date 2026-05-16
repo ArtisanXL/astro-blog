@@ -127,8 +127,9 @@ export function buildBlogPostingEntity(
 export function buildWebPageEntity(
   canonicalUrl: string,
   locale: Locale,
-  opts: { name: string; description?: string },
+  opts: { name: string; description?: string; breadcrumb?: boolean },
 ): object {
+  const includeBreadcrumb = opts.breadcrumb ?? true;
   return {
     "@type": "WebPage",
     "@id": entityIds.webpage(canonicalUrl),
@@ -137,7 +138,9 @@ export function buildWebPageEntity(
     description: opts.description,
     inLanguage: intlLanguage(locale),
     isPartOf: { "@id": entityIds.website },
-    breadcrumb: { "@id": entityIds.breadcrumb(canonicalUrl) },
+    ...(includeBreadcrumb
+      ? { breadcrumb: { "@id": entityIds.breadcrumb(canonicalUrl) } }
+      : {}),
   };
 }
 

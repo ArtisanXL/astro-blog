@@ -29,7 +29,7 @@ const { post, locale, prev, next, altSlug } = Astro.props;
 const t = useTranslations(locale);
 const rt = estimateReadingTime(post.body);
 const slug = getPostSlug(post);
-const altPath = altSlug ? `/blog/${altSlug}` : "/blog";
+const altPath = altSlug ? `/blog/${altSlug}/` : "/blog/";
 const blogHref = localePath(locale, "/blog");
 const homeHref = localePath(locale, "/");
 
