@@ -31,7 +31,7 @@ const homeHref = localePath(locale, "/");
   altPath={altPath}
 >
   <div class="post-header">
-    <div class="shell-narrow">
+    <div class="shell">
       <div class="breadcrumbs">
         <a href={homeHref}>~</a>
         <span>/</span>
@@ -60,7 +60,7 @@ const homeHref = localePath(locale, "/");
     </div>
   </div>
 
-  <div class="shell-narrow">
+  <div class="shell">
     <div class="post-body">
       <article class="prose" id="prose">
         <slot />
@@ -86,7 +86,7 @@ const homeHref = localePath(locale, "/");
     </div>
   </div>
 
-  <div class="shell-narrow">
+  <div class="shell">
     <div class="post-foot">
       <div class="post-foot-grid">
         <a class="foot-link" href={prev ? getPostUrl(prev) : blogHref} style={prev ? "" : "opacity: 0.4;"}>
