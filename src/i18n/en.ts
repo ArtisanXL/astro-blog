@@ -77,7 +77,7 @@ export const en: Strings = {
   },
   home: {
     eyebrow: "/INDEX — hi, I'm mert",
-    headline: "I write Laravel. I got into edge. Notes live here.",
+    headline: "Laravel dev. Got into the edge. Notes live here.",
     intro: (name: string) =>
       `Hi, I'm ${name}. I've been chewing on edge computing for a while now. This is mostly notes from whatever I'm working on — what worked, what didn't.`,
     ctaAll: "All writing",
