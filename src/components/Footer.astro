@@ -44,7 +44,9 @@ const navLinks = NAV_KEYS.map((key) => ({
         </div>
       </div>
       <div>
-        <h4>{t.footer.behind}</h4>
+        <h4>
+          <a href={localePath(locale, NAV_PATHS.colophon)}>{t.footer.behind}</a>
+        </h4>
         <div class="footer-list" style="color: var(--muted); font-size: 13.5px; line-height: 1.6;">
           {t.footer.stack.map((s) => <span>{s}</span>)}
         </div>
