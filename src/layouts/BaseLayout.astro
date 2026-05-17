@@ -25,9 +25,13 @@ interface Props {
   noindex?: boolean;
   /** Page-specific JSON-LD entities merged into the global @graph. */
   jsonLd?: object[];
+  /** Absolute URL of the previous post — emitted as rel=prev in <head>. */
+  prevUrl?: string;
+  /** Absolute URL of the next post — emitted as rel=next in <head>. */
+  nextUrl?: string;
 }
 
-const { locale, title, description, image, canonicalURL, altPath, noindex, jsonLd } =
+const { locale, title, description, image, canonicalURL, altPath, noindex, jsonLd, prevUrl, nextUrl } =
   Astro.props;
 const t = useTranslations(locale);
 ---
@@ -44,6 +48,8 @@ const t = useTranslations(locale);
       altPath={altPath}
       noindex={noindex}
       jsonLd={jsonLd}
+      prevUrl={prevUrl}
+      nextUrl={nextUrl}
     />
   </head>
   <body>

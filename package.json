@@ -13,7 +13,9 @@
     "check": "astro check",
     "format": "prettier --write \"**/*.{astro,ts,tsx,js,jsx,md,mdx,json,css}\"",
     "format:check": "prettier --check \"**/*.{astro,ts,tsx,js,jsx,md,mdx,json,css}\"",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv ./src/env.d.ts"
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv ./src/env.d.ts",
+    "indexnow": "node scripts/indexnow-ping.mjs",
+    "build:deploy": "npm run build && npm run indexnow"
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.6",

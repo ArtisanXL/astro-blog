@@ -16,6 +16,10 @@ interface Props {
   noindex?: boolean;
   /** Page-specific JSON-LD entities — merged into the global @graph. */
   jsonLd?: object[];
+  /** Absolute URL of the previous post in chronological order (Bing rel=prev). */
+  prevUrl?: string;
+  /** Absolute URL of the next post in chronological order (Bing rel=next). */
+  nextUrl?: string;
 }
 
 const t = useTranslations(Astro.props.locale);
@@ -28,6 +32,8 @@ const {
   altPath,
   noindex = false,
   jsonLd = [],
+  prevUrl,
+  nextUrl,
 } = Astro.props;
 
 const siteOrigin = Astro.site ?? new URL(SITE.url);
@@ -67,6 +73,8 @@ const graph: object[] = [buildWebSiteEntity(locale), buildPersonEntity(), ...jso
   content={noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large"}
 />
 <link rel="canonical" href={canonicalURL} />
+{prevUrl && <link rel="prev" href={prevUrl} />}
+{nextUrl && <link rel="next" href={nextUrl} />}
 
 <!-- Icons / PWA -->
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

@@ -51,6 +51,10 @@ const defaultCanonical = new URL(Astro.url.pathname, siteOrigin).toString();
 const canonicalURL = post.data.canonical ?? defaultCanonical;
 const ogImage = postOgImageUrl(post);
 
+// Absolute prev/next URLs for rel=prev / rel=next <link> in <head>.
+const prevUrl = prev ? new URL(getPostUrl(prev), siteOrigin).toString() : undefined;
+const nextUrl = next ? new URL(getPostUrl(next), siteOrigin).toString() : undefined;
+
 // Structured data — BreadcrumbList + WebPage + BlogPosting in one @graph.
 const jsonLd = buildPostGraph(post, {
   canonicalUrl: canonicalURL,
@@ -73,6 +77,8 @@ const jsonLd = buildPostGraph(post, {
   altPath={altPath}
   noindex={post.data.noindex}
   jsonLd={jsonLd}
+  prevUrl={prevUrl}
+  nextUrl={nextUrl}
 >
   <div class="post-header">
     <div class="shell">

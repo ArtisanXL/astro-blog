@@ -51,3 +51,4 @@ User-agent: Claude-SearchBot
 Allow: /
 
 Sitemap: https://mert.gg/sitemap-index.xml
+LLMs: https://mert.gg/llms.txt
