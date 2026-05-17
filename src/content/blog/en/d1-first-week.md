@@ -2,6 +2,7 @@
 title: "A week with D1"
 description: "A Laravel dev's first week with Cloudflare D1. Replica behavior, transaction limits, and the habits you drop."
 pubDate: 2026-05-03
+updatedDate: 2026-05-17
 tags: ["veritabani", "cloudflare", "laravel", "edge"]
 translationKey: "d1-first-week"
 ---
@@ -28,7 +29,7 @@ On the migration side, there's no `php artisan migrate` comfort. D1 has its own 
 
 I spent an hour day one looking for ENUM. Solved it with CHECK. Adding a new status now needs a migration. In Laravel I'd keep it as a string and validate app-side. In D1, validating at the DB layer felt natural because there's no replication to worry about, the write path is single, and the check is cheap.
 
-Transactions exist, but only inside a single request. `db.batch([s1, s2, s3])` runs atomically, all or nothing. There's no "long-lived open transaction." Workers have a per-request CPU budget, you can't hold one open. In Laravel I'd wrap things in `DB::transaction(function () { ... })`. In D1 you have to think of it as a single batch within a single request. That gets awkward exactly where you used to carry transactional state across requests. I had to move to Durable Objects to get that back. The SQLite inside a DO gives you the single-writer guarantee, and "transaction holds state" comes back. But now you're not on D1 anymore, that's a different story.
+Transactions exist, but only inside a single request. `db.batch([s1, s2, s3])` runs atomically, all or nothing. There's no "long-lived open transaction." Workers have a per-request CPU budget, you can't hold one open. In Laravel I'd wrap things in `DB::transaction(function () { ... })`. In D1 you have to think of it as a single batch within a single request. That gets awkward exactly where you used to carry transactional state across requests. I had to move to [Durable Objects](https://developers.cloudflare.com/durable-objects/) to get that back. The SQLite inside a DO gives you the single-writer guarantee, and "transaction holds state" comes back. But now you're not on D1 anymore, that's a different story.
 
 There's no Eloquent-style query builder. On the Worker side, you either write raw SQL (`db.prepare(...).bind(...)`) or pull in something like the Drizzle adapter. I started raw, then quickly wrote a tiny helper:
 

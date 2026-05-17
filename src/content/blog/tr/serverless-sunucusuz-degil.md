@@ -2,6 +2,7 @@
 title: "Serverless aslında sunucusuz değil"
 description: "Bir hata mesajı, soyutlamanın altındaki donanımı hatırlattı."
 pubDate: 2026-05-16
+updatedDate: 2026-05-17
 tags: ["edge", "mimari"]
 translationKey: "serverless-no-server"
 ---
@@ -16,7 +17,7 @@ Bir nesnenin içine büyükçe bir liste koymuşum, `JSON.stringify`, KV'ye yazm
 
 "Serverless" kelimesinin yarattığı yanılsamayı o an hatırladım. Aslında bu işte sunucu vardı. Bir CPU, bir RAM, bir limit. Sadece o sunucunun nerede durduğunu, ne kadar yaşadığını, ne zaman öldüğünü ben bilmiyordum. Sunucu yokluğu değil. Sunucu bilinmezliği.
 
-Bunu kağıt üstünde ilk Worker'ı yazdığım gün de biliyordum. Cloudflare'in dökümantasyonu ilk paragrafta yazıyor zaten: isolate-based runtime, V8, request başına izole. Ama bilmek ile içselleştirmek farklı şey. Bellek hatası bana sunucuyu hatırlattı.
+Bunu kağıt üstünde ilk Worker'ı yazdığım gün de biliyordum. [Cloudflare'in dökümantasyonu](https://developers.cloudflare.com/workers/reference/how-workers-works/) ilk paragrafta yazıyor zaten: isolate-based runtime, V8, request başına izole. Ama bilmek ile içselleştirmek farklı şey. Bellek hatası bana sunucuyu hatırlattı.
 
 PHP-FPM ile yıllarımı geçirmiştim. Bir sunucum vardı, bellek limiti `php.ini`'de yazıyordu, restart edebiliyordum, `htop` açıp süreçleri görebiliyordum. Worker'da hiçbiri yok. Bir hata var. Bir "yapma onu" var. Sunucu hala orada, sadece bana arkasını dönmüş.
 

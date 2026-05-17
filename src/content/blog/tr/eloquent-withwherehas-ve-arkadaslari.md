@@ -2,6 +2,7 @@
 title: "Yıllarca uzun yoldan yazdığım Eloquent kısayolu"
 description: "withWhereHas, withAggregate, loadMissing. Ben farkına varmadan framework'e sızmış üç metot."
 pubDate: 2026-03-12
+updatedDate: 2026-05-17
 tags: ["laravel", "php", "veritabani"]
 translationKey: "eloquent-withwherehas"
 ---
@@ -27,7 +28,7 @@ $users = User::query()
 
 Aynı sonuç, tek closure. Laravel 9'da gelmiş. Ben 11'deyim. Üç yıl boyunca gözümden kaçmış.
 
-Sebep teknik değil. 9.x release notes'unda uzun bir sayfanın altında tek satır. Docs sayfasında ilişki sorgulama başlığının üç scroll altında geçiyor. Google'da arattığımda hâlâ ilk on sonuç iki-closure pattern'ini öneriyor.
+Sebep teknik değil. [9.x release notes](https://laravel.com/docs/9.x/releases)'unda uzun bir sayfanın altında tek satır. Docs sayfasında ilişki sorgulama başlığının üç scroll altında geçiyor. Google'da arattığımda hâlâ ilk on sonuç iki-closure pattern'ini öneriyor.
 
 Sonra bakındım, başka neler kaçırmışım. İki tane daha çıktı.
 

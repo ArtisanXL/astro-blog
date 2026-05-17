@@ -2,6 +2,7 @@
 title: "Three caches before you see a byte"
 description: "I spent an afternoon trying to invalidate the Cloudflare cache and was hitting the wrong layer the entire time. There are at least three of them."
 pubDate: 2026-04-02
+updatedDate: 2026-05-17
 tags: ["cloudflare", "edge", "performans"]
 translationKey: "three-edge-caches"
 ---
@@ -33,6 +34,16 @@ What was actually happening that afternoon: a Worker in front of an origin. The 
 
 A three-layer staircase, each layer refilling from the one below with the wrong content.
 
-The fix wasn't to learn one layer better. It was to know which layer was actually the source of the staleness for a given request and act on that. Diagnosis runs through the response headers first. If the Worker is in path, `cf-cache-status` reads `DYNAMIC` and the Worker may be serving from `caches.default` with no header to tell you. A debug header like `x-cache-layer: worker-hit` on Worker-cached responses is worth a few lines.
+The fix wasn't to learn one layer better. It was to know which layer was actually the source of the staleness for a given request and act on that. Diagnosis runs through the response headers first. If the Worker is in path, `cf-cache-status` reads `DYNAMIC` and the Worker may be serving from `caches.default` with no header to tell you. A debug header like `x-cache-layer: worker-hit` on Worker-cached responses is worth a few lines:
+
+```ts
+const cached = await cache.match(request);
+if (cached) {
+  const headers = new Headers(cached.headers);
+  headers.set("x-cache-layer", "worker-hit");
+  return new Response(cached.body, { ...cached, headers });
+}
+// ... fetch + cache.put as normal, no x-cache-layer set on the miss path.
+```
 
 The layers don't share an invalidation channel. If you want them coherent, you have to invalidate each one yourself, in the right order, from origin outward. Or set TTLs short enough that you don't care, and accept the staleness window.

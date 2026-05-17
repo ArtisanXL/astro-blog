@@ -2,6 +2,7 @@
 title: "Bir byte görmeden önce üç cache"
 description: "Bir öğleden sonrayı Cloudflare cache'ini invalidate etmeye çalışarak geçirdim, sürekli yanlış katmana vuruyordum. En az üç tane var."
 pubDate: 2026-04-02
+updatedDate: 2026-05-17
 tags: ["cloudflare", "edge", "performans"]
 translationKey: "three-edge-caches"
 ---
@@ -33,6 +34,16 @@ O öğleden sonra olan şuydu: Worker önümde, `caches.default` JSON response'l
 
 Üç katlı bir merdiven yaratmıştım, her kat bir altından yanlış içerikle doluyordu.
 
-Çözüm tek bir katmanı daha iyi öğrenmek değildi. O request için staleness'in hangi katmandan geldiğini bilip ona göre hareket etmekti. Tanı response header'larından başlar. Worker path'teyse `cf-cache-status: DYNAMIC` döner ve Worker içeride `caches.default`'tan serve ediyor olabilir, sana söyleyen bir header yok. Birkaç satırla `x-cache-layer: worker-hit` debug header'ı koymak değiyor.
+Çözüm tek bir katmanı daha iyi öğrenmek değildi. O request için staleness'in hangi katmandan geldiğini bilip ona göre hareket etmekti. Tanı response header'larından başlar. Worker path'teyse `cf-cache-status: DYNAMIC` döner ve Worker içeride `caches.default`'tan serve ediyor olabilir, sana söyleyen bir header yok. Birkaç satırla `x-cache-layer: worker-hit` debug header'ı koymak değiyor:
+
+```ts
+const cached = await cache.match(request);
+if (cached) {
+  const headers = new Headers(cached.headers);
+  headers.set("x-cache-layer", "worker-hit");
+  return new Response(cached.body, { ...cached, headers });
+}
+// ... miss path normal akıyor; sadece hit'te header eklemek yetiyor.
+```
 
 Katmanlar invalidation kanalını paylaşmıyor. Tutarlılık istiyorsan her birini kendin invalidate etmen gerek, origin'den dışarı doğru. Ya da TTL'leri umursamayacağın kadar kısa tut, staleness penceresini kabul et.

@@ -2,6 +2,7 @@
 title: "D1 ile bir hafta sonra"
 description: "Bir Laravel'cinin Cloudflare D1'le ilk haftası. Replica davranışı, transaction sınırı ve bırakılan alışkanlıklar."
 pubDate: 2026-05-03
+updatedDate: 2026-05-17
 tags: ["veritabani", "cloudflare", "laravel", "edge"]
 translationKey: "d1-first-week"
 ---
@@ -28,7 +29,7 @@ Migration tarafında `php artisan migrate` rahatlığı yok. D1'in kendi sistemi
 
 İlk gün bir saatimi ENUM bulamamaya harcadım. CHECK'le çözdüm. Yeni bir status eklemek artık migration istiyor. Laravel'de string column tutar, validasyonu app tarafında yapardım. D1'de DB seviyesinde yapmak doğal hissetti, çünkü replication yok, yazma noktası tek, validasyon ucuz.
 
-Transaction desteği var ama tek bir request içinde. `db.batch([s1, s2, s3])` atomik çalışıyor, hepsi olur ya da hiçbiri. "Uzun süre açık tutulan transaction" yok. Workers'ın istek başına CPU time'ı sınırlı, açık tutamazsın. Laravel'de `DB::transaction(function () { ... })` ile blok içine sarmaya alışıktım. D1'de bunu request boyunca tek bir batch olarak düşünmek gerekiyor. İki request arasında transaction tutman gereken yerlerde tuhaf. Ben oraya gelince Durable Object'lere geçtim. DO içindeki SQLite single-writer garantisi veriyor, "transaction'da state tutma" kavramı geri geliyor. Bu artık D1 değil tabi, başka bir hikaye.
+Transaction desteği var ama tek bir request içinde. `db.batch([s1, s2, s3])` atomik çalışıyor, hepsi olur ya da hiçbiri. "Uzun süre açık tutulan transaction" yok. Workers'ın istek başına CPU time'ı sınırlı, açık tutamazsın. Laravel'de `DB::transaction(function () { ... })` ile blok içine sarmaya alışıktım. D1'de bunu request boyunca tek bir batch olarak düşünmek gerekiyor. İki request arasında transaction tutman gereken yerlerde tuhaf. Ben oraya gelince [Durable Object'lere](https://developers.cloudflare.com/durable-objects/) geçtim. DO içindeki SQLite single-writer garantisi veriyor, "transaction'da state tutma" kavramı geri geliyor. Bu artık D1 değil tabi, başka bir hikaye.
 
 Eloquent gibi bir query builder yok. Worker tarafında ya raw SQL (`db.prepare(...).bind(...)`) ya Drizzle adapter gibi bir şey. Ben başta raw kullandım, hızla küçük bir helper class yazdım:
 

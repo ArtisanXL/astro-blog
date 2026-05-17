@@ -2,6 +2,7 @@
 title: "The Eloquent shortcut I'd been writing the long way for years"
 description: "withWhereHas, withAggregate, loadMissing. Three methods that slipped into the framework while I wasn't looking."
 pubDate: 2026-03-12
+updatedDate: 2026-05-17
 tags: ["laravel", "php", "veritabani"]
 translationKey: "eloquent-withwherehas"
 ---
@@ -27,7 +28,7 @@ $users = User::query()
 
 Same result. One closure. Landed in Laravel 9. I'm on 11. Missed it for three years.
 
-The reason isn't technical. The 9.x release notes had it as one bullet near the bottom of a long page. The docs page on relations mentions it once, three scrolls past the section you usually visit. Google's first ten results still surface the two-closure pattern because they're older than the method.
+The reason isn't technical. The [9.x release notes](https://laravel.com/docs/9.x/releases) had it as one bullet near the bottom of a long page. The docs page on relations mentions it once, three scrolls past the section you usually visit. Google's first ten results still surface the two-closure pattern because they're older than the method.
 
 After finding it I went looking for what else I'd missed. Two more came up.
 

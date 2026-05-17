@@ -2,13 +2,14 @@
 title: "Adapter koymadan Astro deploy ettim"
 description: "Bu blog Cloudflare'de Static Assets olarak yayında. Adapter yok, Worker yok. Niye böyle yaptım."
 pubDate: 2026-04-21
+updatedDate: 2026-05-17
 tags: ["edge", "mimari", "astro", "cloudflare"]
 translationKey: "no-adapter"
 ---
 
 Birine bu blogu nasıl deploy ettiğimi anlattım, "adapter koymadın mı" dedi. Yok. `wrangler.jsonc`'ta `main` satırı yok, `astro.config.mjs`'de adapter satırı yok. Build çıktısı CDN'e doğrudan statik dosya olarak gidiyor. Çalışıyor.
 
-Çoğu tutorial adapter ile başlıyor çünkü SSR çoğu uygulamanın varsayılan ihtiyacı. Bir blogun değil. Sayfaları derleme zamanında üretiliyor zaten. İki aydır böyle, hiçbir şey patlamadı.
+Çoğu tutorial adapter ile başlıyor çünkü SSR çoğu uygulamanın varsayılan ihtiyacı. Bir blogun değil. Sayfaları derleme zamanında üretiliyor zaten. 2026-02-18'den beri — bu blogun kendisi — hiçbir şey patlamadı.
 
 `wrangler.jsonc` şuna benziyor:
 

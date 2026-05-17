@@ -2,13 +2,14 @@
 title: "I shipped Astro to Cloudflare without an adapter"
 description: "This blog runs on Cloudflare as plain Static Assets. No adapter, no Worker code. Here's why."
 pubDate: 2026-04-21
+updatedDate: 2026-05-17
 tags: ["edge", "mimari", "astro", "cloudflare"]
 translationKey: "no-adapter"
 ---
 
 Someone asked how I deployed this blog and got stuck on "wait, no adapter?" Yeah. No `main` in `wrangler.jsonc`. No adapter line in `astro.config.mjs`. The build output goes straight to the CDN as plain HTML. It works.
 
-Most tutorials start with the SSR adapter because most apps actually want SSR. A blog doesn't. Every page compiles at build time. Two months of running like this and nothing's blown up.
+Most tutorials start with the SSR adapter because most apps actually want SSR. A blog doesn't. Every page compiles at build time. Since 2026-02-18 — this blog itself — and nothing's blown up.
 
 The config is short:
 
