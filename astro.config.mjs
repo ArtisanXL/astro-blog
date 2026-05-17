@@ -44,6 +44,53 @@ function buildLastmodMap() {
 
 const lastmodMap = buildLastmodMap();
 
+/**
+ * Build pathname → [{url, lang}] alternates from blog frontmatter translationKey.
+ * Pairs posts across locales so the sitemap emits xhtml:link alternates even when
+ * EN and TR slugs differ (the default @astrojs/sitemap i18n matching is path-based
+ * and misses cross-slug pairs).
+ */
+function buildAlternatesMap() {
+  const siteUrl = SITE.url.replace(/\/$/, "");
+  const localeTag = { tr: "tr-TR", en: "en-US" };
+  const byKey = new Map();
+  const base = new URL("./src/content/blog", import.meta.url).pathname;
+
+  for (const lang of ["en", "tr"]) {
+    const dir = join(base, lang);
+    let files;
+    try {
+      files = readdirSync(dir).filter((f) => f.endsWith(".md") || f.endsWith(".mdx"));
+    } catch {
+      continue;
+    }
+    for (const file of files) {
+      const raw = readFileSync(join(dir, file), "utf8");
+      const fm = raw.match(/^---[\s\S]*?---/)?.[0] ?? "";
+      const key = fm.match(/^translationKey:\s*["']?(.+?)["']?\s*$/m)?.[1]?.trim();
+      if (!key) continue;
+      const slug = basename(file, file.endsWith(".mdx") ? ".mdx" : ".md");
+      const entry = byKey.get(key) ?? {};
+      entry[lang] = `/${lang}/blog/${slug}/`;
+      byKey.set(key, entry);
+    }
+  }
+
+  const map = new Map();
+  for (const { tr, en } of byKey.values()) {
+    if (!tr || !en) continue;
+    const links = [
+      { url: `${siteUrl}${tr}`, lang: localeTag.tr },
+      { url: `${siteUrl}${en}`, lang: localeTag.en },
+    ];
+    map.set(tr, links);
+    map.set(en, links);
+  }
+  return map;
+}
+
+const alternatesMap = buildAlternatesMap();
+
 // https://astro.build/config
 export default defineConfig({
   site: SITE.url,
@@ -82,6 +129,8 @@ export default defineConfig({
         const pathname = new URL(item.url).pathname;
         const lm = lastmodMap.get(pathname);
         if (lm) item.lastmod = lm;
+        const alts = alternatesMap.get(pathname);
+        if (alts) item.links = alts;
         return item;
       },
     }),
