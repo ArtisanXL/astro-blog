@@ -45,7 +45,8 @@ export const tr = {
   },
   blogIndex: {
     title: "Yazılar",
-    descriptionMeta: "Tüm yazılar — Laravel, edge ve mimari notları.",
+    descriptionMeta:
+      "Mertcan Dinler'in tüm yazıları — Laravel, Cloudflare Workers, D1 ve edge mimarisi üzerine pratik notlar. Etikete göre filtrele veya kaydır.",
     eyebrow: (n: number) => `/yazılar — ${n} adet`,
     heading: "Arşiv",
     lede: "Yazdığım her şey burada. Etiketle daralt, başlıkta ara, ya da sadece kaydırarak gez.",
@@ -94,7 +95,8 @@ export const tr = {
     feedLink: "Arşiv",
     nowEyebrow: "/şu sıralar",
     nowHeading: "Bazı projelerimi edge ile donatıyorum.",
-    nowBody: "Workers'ta çalışacak şekilde yeniden yazıyorum. Stateful kalan kısımlar var, onlarla boğuşuyorum.",
+    nowBody:
+      "Workers'ta çalışacak şekilde yeniden yazıyorum. Stateful kalan kısımlar var, onlarla boğuşuyorum.",
     stackEyebrow: "/teknoloji",
     stack: [
       ["Backend", "Laravel 13 · PHP 8.4"],
@@ -104,8 +106,9 @@ export const tr = {
     ] as [string, string][],
   },
   about: {
-    title: "Hakkımda",
-    descriptionMeta: "Mert hakkında: nasıl başladı, burada ne paylaşıyor, nasıl ulaşılır.",
+    title: "Mertcan Dinler Hakkında",
+    descriptionMeta:
+      "Mertcan Dinler, Laravel ve Cloudflare edge teknolojileriyle çalışan bir geliştirici. Burada PHP, Workers, D1 ve hızlı ürün çıkarma üzerine yazıyor.",
     eyebrow: "/hakkımda — selam, ben mert",
     heading: "Yazılıma ortaokulda bulaştım.",
     introHtml: `Ortaokulda Silkroad Online oynuyordum; giriş sırası saatlerce sürüyordu. <a class="link" href="https://www.autoitscript.com/site/autoit/">AutoIt</a>'i bulup otomatik giriş için bir script yazdım. Çalışınca başka ne otomatikleştirebileceğimi düşündüm. O soruyu sormayı bırakmadım.`,
@@ -286,7 +289,7 @@ export const tr = {
       descriptionMeta:
         "N+1, lazy collection, withWhereHas, --pretend yalanları — Eloquent'i hızlı tutarken çıkardığım dersler.",
       intro:
-        "Eloquent \"yavaş\" değil; sadece dikkatsiz kullanılınca yavaş. Bu seri, gerçek production'da denk geldiğim performans hatalarını ve nasıl çözdüğümü anlatıyor. Lazy collection ne zaman gerçekten lazım, N+1 ne zaman tehlike değil, --pretend neden yalan söyler.",
+        'Eloquent "yavaş" değil; sadece dikkatsiz kullanılınca yavaş. Bu seri, gerçek production\'da denk geldiğim performans hatalarını ve nasıl çözdüğümü anlatıyor. Lazy collection ne zaman gerçekten lazım, N+1 ne zaman tehlike değil, --pretend neden yalan söyler.',
     },
     "astro-on-cloudflare": {
       title: "Astro'yu Cloudflare'e adapter'sız göndermek",

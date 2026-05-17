@@ -92,21 +92,21 @@ const jsonLd = buildPostGraph(post, {
       <div style="display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
         {post.data.tags.map((tg) => <Tag slug={tg} locale={locale} />)}
       </div>
-      {topicLinks.length > 0 && (
-        <div
-          style="display: flex; gap: 12px; align-items: baseline; margin-bottom: 14px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 11px; color: var(--muted);"
-        >
-          <span style="letter-spacing: 0.05em; text-transform: uppercase;">{t.post.partOf}</span>
-          {topicLinks.map((tp) => (
-            <a
-              href={tp.href}
-              style="color: var(--muted); border-bottom: 1px solid var(--border); padding-bottom: 1px;"
-            >
-              {tp.title}
-            </a>
-          ))}
-        </div>
-      )}
+      {
+        topicLinks.length > 0 && (
+          <div style="display: flex; gap: 12px; align-items: baseline; margin-bottom: 14px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 11px; color: var(--muted);">
+            <span style="letter-spacing: 0.05em; text-transform: uppercase;">{t.post.partOf}</span>
+            {topicLinks.map((tp) => (
+              <a
+                href={tp.href}
+                style="color: var(--muted); border-bottom: 1px solid var(--border); padding-bottom: 1px;"
+              >
+                {tp.title}
+              </a>
+            ))}
+          </div>
+        )
+      }
       <h1>{post.data.title}</h1>
       <p class="lede">{post.data.description}</p>
       <div class="post-meta">
@@ -118,8 +118,19 @@ const jsonLd = buildPostGraph(post, {
         <span>{formatDateLong(post.data.pubDate, locale)}</span>
         <span>·</span>
         <span style="display: inline-flex; align-items: center; gap: 6px;">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-          {rt.minutes} {t.post.readingMinutes}
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            ><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg
+          >
+          {rt.minutes}
+          {t.post.readingMinutes}
         </span>
       </div>
     </div>
@@ -132,19 +143,28 @@ const jsonLd = buildPostGraph(post, {
       </article>
 
       <aside class="toc" id="toc">
-        <h5>{t.post.toc}</h5>
+        <p>{t.post.toc}</p>
         <ul id="toc-list"></ul>
         <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);">
-          <h5>{t.post.share}</h5>
-          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--muted);">
-            <a id="share-twitter" href="#" target="_blank" rel="noreferrer" style="color: var(--muted);">{t.post.shareTwitter}</a>
+          <p>{t.post.share}</p>
+          <div
+            style="display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--muted);"
+          >
+            <a
+              id="share-twitter"
+              href="#"
+              target="_blank"
+              rel="noreferrer"
+              style="color: var(--muted);">{t.post.shareTwitter}</a
+            >
             <button
               id="share-copy"
               class="btn-ghost"
               data-copy={t.post.shareCopy}
               data-copied={t.post.shareCopied}
               style="background: none; border: none; color: var(--muted); cursor: pointer; padding: 0; text-align: left; font: inherit;"
-            >{t.post.shareCopy}</button>
+              >{t.post.shareCopy}</button
+            >
           </div>
         </div>
       </aside>
@@ -156,11 +176,19 @@ const jsonLd = buildPostGraph(post, {
   <div class="shell">
     <div class="post-foot">
       <div class="post-foot-grid">
-        <a class="foot-link" href={prev ? getPostUrl(prev) : blogHref} style={prev ? "" : "opacity: 0.4;"}>
+        <a
+          class="foot-link"
+          href={prev ? getPostUrl(prev) : blogHref}
+          style={prev ? "" : "opacity: 0.4;"}
+        >
           <span class="lbl">{t.post.prev}</span>
           <h4>{prev ? prev.data.title : t.post.atStart}</h4>
         </a>
-        <a class="foot-link next" href={next ? getPostUrl(next) : blogHref} style={next ? "" : "opacity: 0.4;"}>
+        <a
+          class="foot-link next"
+          href={next ? getPostUrl(next) : blogHref}
+          style={next ? "" : "opacity: 0.4;"}
+        >
           <span class="lbl">{t.post.next}</span>
           <h4>{next ? next.data.title : t.post.atEnd}</h4>
         </a>
@@ -178,7 +206,11 @@ const jsonLd = buildPostGraph(post, {
     const headings = prose.querySelectorAll("h2");
     tocList.innerHTML = "";
     headings.forEach((h) => {
-      if (!h.id) h.id = h.textContent.toLowerCase().replace(/[^\w]+/g, "-").replace(/^-|-$/g, "");
+      if (!h.id)
+        h.id = h.textContent
+          .toLowerCase()
+          .replace(/[^\w]+/g, "-")
+          .replace(/^-|-$/g, "");
       const li = document.createElement("li");
       const a = document.createElement("a");
       a.href = "#" + h.id;
@@ -205,7 +237,8 @@ const jsonLd = buildPostGraph(post, {
     const url = location.href;
     const title = document.title;
     const tw = document.getElementById("share-twitter");
-    if (tw) tw.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
+    if (tw)
+      tw.href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
     const copy = document.getElementById("share-copy");
     if (copy && !copy.dataset.bound) {
       copy.dataset.bound = "1";

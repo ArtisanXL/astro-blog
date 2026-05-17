@@ -49,13 +49,9 @@ const alternates = altPath
           : new URL(localePath(l, altPath), siteOrigin).toString(),
     }))
   : null;
-const trPath =
-  altPath == null
-    ? null
-    : locale === "tr"
-      ? Astro.url.pathname
-      : localePath("tr", altPath);
-const xDefaultHref = trPath ? new URL(trPath, siteOrigin).toString() : null;
+const enPath =
+  altPath == null ? null : locale === "en" ? Astro.url.pathname : localePath("en", altPath);
+const xDefaultHref = enPath ? new URL(enPath, siteOrigin).toString() : null;
 
 // Always-on global entities. Pages can append more via the `jsonLd` prop.
 const graph: object[] = [buildWebSiteEntity(locale), buildPersonEntity(), ...jsonLd];

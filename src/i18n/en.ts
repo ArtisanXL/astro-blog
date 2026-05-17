@@ -47,7 +47,8 @@ export const en: Strings = {
   },
   blogIndex: {
     title: "Writing",
-    descriptionMeta: "All writing — notes on Laravel, edge, and architecture.",
+    descriptionMeta:
+      "All writing by Mertcan Dinler — practical notes on Laravel, Cloudflare Workers, D1, and edge architecture. Filter by tag or scroll through.",
     eyebrow: (n: number) => `/writing — ${n} posts`,
     heading: "Archive",
     lede: "Everything I've written, in one place. Filter by tag, search by title, or just scroll.",
@@ -106,8 +107,9 @@ export const en: Strings = {
     ],
   },
   about: {
-    title: "About",
-    descriptionMeta: "About Mert: how it started, what's here, how to reach me.",
+    title: "About Mertcan Dinler",
+    descriptionMeta:
+      "Mertcan Dinler is a Laravel and Cloudflare edge developer. This is where he writes about PHP, Workers, D1, and what it takes to ship fast.",
     eyebrow: "/about — hi, I'm mert",
     heading: "I got into programming in middle school.",
     introHtml: `In middle school I was playing Silkroad Online; the login queue took hours. I found <a class="link" href="https://www.autoitscript.com/site/autoit/">AutoIt</a> and wrote a script to log in automatically. Once it worked I started wondering what else I could automate. I never stopped asking.`,
@@ -273,7 +275,7 @@ export const en: Strings = {
       descriptionMeta:
         "Laravel doesn't run on V8 isolates — but a Laravel dev weighing D1, Queues, and Workers next door is a different story. These are those field notes.",
       intro:
-        "Laravel runs on PHP-FPM, not on V8 isolates — so \"Laravel on the edge\" isn't a literal thing. What is a thing: a Laravel dev hitting the limits of a familiar stack and trying edge primitives next door. Building a failed_jobs view on D1, trying Cloudflare Queues for a sidecar workload, deciding where the monolith stays. These are those field notes — what I tried, where I flopped, what I turned back from.",
+        'Laravel runs on PHP-FPM, not on V8 isolates — so "Laravel on the edge" isn\'t a literal thing. What is a thing: a Laravel dev hitting the limits of a familiar stack and trying edge primitives next door. Building a failed_jobs view on D1, trying Cloudflare Queues for a sidecar workload, deciding where the monolith stays. These are those field notes — what I tried, where I flopped, what I turned back from.',
     },
     "cloudflare-workers": {
       title: "Debugging Cloudflare Workers in production",
