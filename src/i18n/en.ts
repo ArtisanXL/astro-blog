@@ -47,6 +47,7 @@ export const en: Strings = {
   },
   blogIndex: {
     title: "Writing",
+    titleMeta: "Writing · Laravel & edge notes · mert.gg",
     descriptionMeta:
       "All writing by Mertcan Dinler — practical notes on Laravel, Cloudflare Workers, D1, and edge architecture. Filter by tag or scroll through.",
     eyebrow: (n: number) => `/writing — ${n} posts`,

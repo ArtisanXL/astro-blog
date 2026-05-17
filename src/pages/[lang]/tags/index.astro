@@ -34,7 +34,7 @@ const jsonLd = [
   buildItemListEntity(
     tags.map(([slug]) => ({
       name: tagLabel(slug, locale),
-      url: localePath(locale, `/tags/${slug}`),
+      url: localePath(locale, `/tags/${encodeURIComponent(slug)}`),
     })),
     canonicalUrl,
   ),
@@ -60,18 +60,35 @@ const jsonLd = [
         {t.tagsIndex.lede}
       </p>
       <div class="tag-grid">
-        {tags.map(([slug, n]) => (
-          <a href={localePath(locale, `/tags/${slug}`)} class="tag-cell">
-            <div>
-              <div style="display: flex; align-items: center; gap: 6px; color: var(--muted-2); font-family: var(--font-mono); font-size: 11px;">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/></svg>
-                {slug}
+        {
+          tags.map(([slug, n]) => (
+            <a href={localePath(locale, `/tags/${encodeURIComponent(slug)}`)} class="tag-cell">
+              <div>
+                <div style="display: flex; align-items: center; gap: 6px; color: var(--muted-2); font-family: var(--font-mono); font-size: 11px;">
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18" />
+                  </svg>
+                  {slug}
+                </div>
+                <div class="name" style="margin-top: 8px;">
+                  {tagLabel(slug, locale)}
+                </div>
               </div>
-              <div class="name" style="margin-top: 8px;">{tagLabel(slug, locale)}</div>
-            </div>
-            <span class="count tabular">{String(n).padStart(2, "0")} {t.tagsIndex.postsSuffix}</span>
-          </a>
-        ))}
+              <span class="count tabular">
+                {String(n).padStart(2, "0")} {t.tagsIndex.postsSuffix}
+              </span>
+            </a>
+          ))
+        }
       </div>
     </div>
   </section>

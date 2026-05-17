@@ -45,6 +45,7 @@ export const tr = {
   },
   blogIndex: {
     title: "Yazılar",
+    titleMeta: "Yazılar · Laravel ve edge notları · mert.gg",
     descriptionMeta:
       "Mertcan Dinler'in tüm yazıları — Laravel, Cloudflare Workers, D1 ve edge mimarisi üzerine pratik notlar. Etikete göre filtrele veya kaydır.",
     eyebrow: (n: number) => `/yazılar — ${n} adet`,

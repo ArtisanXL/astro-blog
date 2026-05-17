@@ -2,13 +2,9 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import PostRow from "~/components/PostRow.astro";
 import { getPublishedPosts, getAllTags, getPostUrl } from "~/lib/posts";
-import { tagLabel, SITE, BRAND } from "~/consts";
+import { tagLabel, SITE } from "~/consts";
 import { LOCALES, type Locale, useTranslations, localePath } from "~/i18n";
-import {
-  buildBlogEntity,
-  buildBreadcrumbEntity,
-  buildItemListEntity,
-} from "~/lib/schema";
+import { buildBlogEntity, buildBreadcrumbEntity, buildItemListEntity } from "~/lib/schema";
 
 export const prerender = true;
 
@@ -53,7 +49,7 @@ const jsonLd = [
 
 <BaseLayout
   locale={locale}
-  title={`${t.blogIndex.title} · ${BRAND}`}
+  title={t.blogIndex.titleMeta}
   description={t.blogIndex.descriptionMeta}
   altPath="/blog"
   jsonLd={jsonLd}
@@ -69,15 +65,33 @@ const jsonLd = [
   <div class="shell">
     <div class="filter-bar" id="filter-bar">
       <div class="filter-chips">
-        <button class="tag active" data-filter-tag="" type="button">{t.blogIndex.filterAll} · {posts.length}</button>
-        {topTags.map(([slug, n]) => (
-          <button class="tag" data-filter-tag={slug} type="button">{tagLabel(slug, locale)} · {n}</button>
-        ))}
-        <a href={localePath(locale, "/tags")} class="tag" style="border-style: dashed;">{t.blogIndex.filterAllMore}</a>
+        <button class="tag active" data-filter-tag="" type="button"
+          >{t.blogIndex.filterAll} · {posts.length}</button
+        >
+        {
+          topTags.map(([slug, n]) => (
+            <button class="tag" data-filter-tag={slug} type="button">
+              {tagLabel(slug, locale)} · {n}
+            </button>
+          ))
+        }
+        <a href={localePath(locale, "/tags")} class="tag" style="border-style: dashed;"
+          >{t.blogIndex.filterAllMore}</a
+        >
       </div>
       <div style="display: flex; gap: 8px; align-items: center;">
         <div class="search-box">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <svg
+            width="13"
+            height="13"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            ><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg
+          >
           <input id="search-input" type="search" placeholder={t.blogIndex.searchPlaceholder} />
           <kbd>⌘K</kbd>
         </div>
@@ -85,9 +99,7 @@ const jsonLd = [
     </div>
 
     <div class="postlist" id="postlist" style="padding-bottom: 64px;">
-      {posts.map((p, i) => (
-        <PostRow post={p} index={i} locale={locale} />
-      ))}
+      {posts.map((p, i) => <PostRow post={p} index={i} locale={locale} />)}
     </div>
     <div id="empty-state" class="empty" style="display: none;">{t.blogIndex.emptyState}</div>
   </div>
@@ -118,12 +130,21 @@ const jsonLd = [
       if (empty) empty.style.display = visible === 0 ? "" : "none";
     }
 
-    input.addEventListener("input", (e) => { q = e.target.value; apply(); });
+    input.addEventListener("input", (e) => {
+      q = e.target.value;
+      apply();
+    });
     chips.forEach((c) => {
       c.addEventListener("click", () => {
         const t = c.dataset.filterTag || "";
         activeTag = activeTag === t ? "" : t;
-        chips.forEach((cc) => cc.classList.toggle("active", (cc.dataset.filterTag || "") === activeTag || (!activeTag && (cc.dataset.filterTag || "") === "")));
+        chips.forEach((cc) =>
+          cc.classList.toggle(
+            "active",
+            (cc.dataset.filterTag || "") === activeTag ||
+              (!activeTag && (cc.dataset.filterTag || "") === ""),
+          ),
+        );
         apply();
       });
     });

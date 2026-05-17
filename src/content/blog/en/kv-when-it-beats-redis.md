@@ -9,7 +9,7 @@ featured: true
 
 Monday afternoon I decided to try moving our feature-flag store off Redis and onto Workers KV. Same shape: read-heavy, write-rarely, key-value. Half the move was clean. The other half I rolled back the next morning.
 
-The clean half was the obvious one. Feature flags, A/B test copy, geo-routing overrides — stuff you write once and read many times. In Laravel I'd been doing `Cache::remember('flags:v3', 60, fn() => DB::table('flags')->get())` off a Redis cache. In KV it's `env.FLAGS.get('v3', 'json')` — globally distributed, no connection pool, no Redis box to keep warm. [Read latency is under 10ms p99 from any Cloudflare colo](https://developers.cloudflare.com/kv/reference/how-kv-works/). For that pattern, KV is straightforwardly cheaper and faster.
+The clean half was the obvious one. Feature flags, A/B test copy, geo-routing overrides — stuff you write once and read many times. In Laravel I'd been doing `Cache::remember('flags:v3', 60, fn() => DB::table('flags')->get())` off a Redis cache. In KV it's `env.FLAGS.get('v3', 'json')` — globally distributed, no connection pool, no Redis box to keep warm. [Read latency is under 10ms p99 from any Cloudflare colo](https://developers.cloudflare.com/kv/concepts/how-kv-works/). For that pattern, KV is straightforwardly cheaper and faster.
 
 The API surface is small on purpose. Put a value in, get it back, optionally expire it.
 
@@ -25,7 +25,7 @@ Where I hit a wall was trying to carry over Redis patterns that KV structurally 
 
 Rate limiting. I'd been doing `INCR key` + `EXPIRE key 60` in Redis for per-IP rate limits. In KV there's no atomic increment. A get-then-put is a read-modify-write with a race — two requests hitting different colos at the same time both read the same count, both write `count + 1`. You undercount. The right tool is [Durable Objects](https://developers.cloudflare.com/durable-objects/) with a single-writer counter, or Cloudflare's [Rate Limiting binding](https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/).
 
-Sessions. KV is [eventually consistent](https://developers.cloudflare.com/kv/reference/consistency/). Cloudflare's docs are clear about it: propagation to all edges can take up to 60 seconds. For cache data that's fine. For session state — write after login, read on redirect — it's a real problem. A user logs in on one colo, hits a different edge on the next request, and the session key isn't there yet.
+Sessions. KV is [eventually consistent](https://developers.cloudflare.com/kv/concepts/how-kv-works/). Cloudflare's docs are clear about it: propagation to all edges can take up to 60 seconds. For cache data that's fine. For session state — write after login, read on redirect — it's a real problem. A user logs in on one colo, hits a different edge on the next request, and the session key isn't there yet.
 
 Pub/sub, lists, sorted sets. Gone. KV is a key-value store. No channels, no LPUSH, no ZADD. If you're reaching for those, you need a different primitive.
 
