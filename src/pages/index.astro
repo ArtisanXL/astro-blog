@@ -1,0 +1,51 @@
+---
+/**
+ * Root entrypoint — picks a locale from the visitor's browser preferences and
+ * redirects. Falls back to English when no supported language is detected.
+ *
+ * This is a static page (Workers Static Assets has no access to request
+ * headers), so detection runs client-side via `navigator.languages`. The
+ * `<meta http-equiv="refresh">` is a no-JS fallback that also gives crawlers
+ * a deterministic destination.
+ */
+import { SITE } from "~/consts";
+
+export const prerender = true;
+
+const siteUrl = SITE.url.replace(/\/$/, "");
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{SITE.title}</title>
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={`${siteUrl}/en/`} />
+    <link rel="alternate" hreflang="tr" href={`${siteUrl}/tr/`} />
+    <link rel="alternate" hreflang="en" href={`${siteUrl}/en/`} />
+    <link rel="alternate" hreflang="x-default" href={`${siteUrl}/en/`} />
+    <meta http-equiv="refresh" content="0; url=/en/" />
+    <script is:inline>
+      (function () {
+        var supported = ["tr", "en"];
+        var fallback = "en";
+        var langs =
+          (navigator.languages && navigator.languages.length
+            ? navigator.languages
+            : [navigator.language || ""]) || [];
+        var target = fallback;
+        for (var i = 0; i < langs.length; i++) {
+          var tag = (langs[i] || "").toLowerCase().split("-")[0];
+          if (supported.indexOf(tag) !== -1) {
+            target = tag;
+            break;
+          }
+        }
+        window.location.replace("/" + target + "/");
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>

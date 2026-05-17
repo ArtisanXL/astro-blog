@@ -101,11 +101,8 @@ export default defineConfig({
     locales: ["tr", "en"],
     routing: {
       prefixDefaultLocale: true,
-      redirectToDefaultLocale: true,
+      redirectToDefaultLocale: false,
     },
-  },
-  redirects: {
-    "/": "/tr/",
   },
   build: {
     format: "directory",
